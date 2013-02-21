@@ -23,6 +23,7 @@ public class Loader {
 	private Quran otherFontsQuran;
 	private QuranData quranData;
 	private Font me_quran_font;
+	private Font hussaini_nastaleeq_font;
 
 	/**
 	 * tanween to be used by me_quran font.
@@ -31,6 +32,7 @@ public class Loader {
 	private static final String quran_uthmani_normal_tanween_xml_path = "../resources/quran-uthmani.xml";
 	private static final String quran_data_xml_path = "../resources/quran-data.xml";
 	private static final String me_quran_font_path = "../resources/me_quran_volt_newmet.ttf";
+	private static final String hussaini_nastaleeq_font_path = "../resources/hussaini-nastaleeq.ttf";
 
 	private static Loader loader = new Loader();
 
@@ -59,6 +61,10 @@ public class Loader {
 
 	public Font getMeQuranFont() {
 		return this.me_quran_font;
+	}
+
+	public Font getHussainiNastaleeqFont() {
+		return this.hussaini_nastaleeq_font;
 	}
 
 	private Quran loadQuranText(boolean differentTanween) {
@@ -103,6 +109,18 @@ public class Loader {
 				.getResourceAsStream(me_quran_font_path)) {
 			f = Font.createFont(Font.TRUETYPE_FONT, is);
 			this.me_quran_font = f.deriveFont(24f); // have to specify float
+			// also register font with system
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
+		} catch (IOException | FontFormatException e) {
+			System.err.println("Error loading and creating custom font: "
+					+ e.getMessage());
+		}
+
+		try (InputStream is = Loader.class
+				.getResourceAsStream(hussaini_nastaleeq_font_path)) {
+			f = Font.createFont(Font.TRUETYPE_FONT, is);
+			this.hussaini_nastaleeq_font = f.deriveFont(14f); // have to specify
+																// float
 			// also register font with system
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
 		} catch (IOException | FontFormatException e) {
