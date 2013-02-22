@@ -19,8 +19,8 @@ import info.usmans.QuranProject.model.QuranData;
  * 
  */
 public class Loader {
-	private Quran meFontQuran;
-	private Quran otherFontsQuran;
+	private Quran usmaniScriptQuran;
+	private Quran simpleScriptQuran;
 	private QuranData quranData;
 	private Font me_quran_font;
 	private Font hussaini_nastaleeq_font;
@@ -29,7 +29,7 @@ public class Loader {
 	 * tanween to be used by me_quran font.
 	 */
 	private static final String quran_uthmani_different_tanween_xml_path = "../resources/quran-uthmani-different-tanween.xml";
-	private static final String quran_uthmani_normal_tanween_xml_path = "../resources/quran-uthmani.xml";
+	private static final String quran_simple_enhanced_xml_path = "../resources/quran-simple-enhanced.xml";
 	private static final String quran_data_xml_path = "../resources/quran-data.xml";
 	private static final String me_quran_font_path = "../resources/me_quran_volt_newmet.ttf";
 	private static final String hussaini_nastaleeq_font_path = "../resources/hussaini-nastaleeq.ttf";
@@ -37,8 +37,8 @@ public class Loader {
 	private static Loader loader = new Loader();
 
 	private Loader() {
-		this.meFontQuran = loadQuranText(true);
-		this.otherFontsQuran = loadQuranText(false);
+		this.usmaniScriptQuran = loadQuranText(true);
+		this.simpleScriptQuran = loadQuranText(false);
 		loadQuranData();
 		loadQuranFonts();
 	}
@@ -47,12 +47,12 @@ public class Loader {
 		return loader;
 	}
 
-	public Quran getQuranTextForMEFont() {
-		return this.meFontQuran;
+	public Quran getUsmaniQuranText() {
+		return this.usmaniScriptQuran;
 	}
 
-	public Quran getQuranTextForOtherFonts() {
-		return this.otherFontsQuran;
+	public Quran getSimpleQuranText() {
+		return this.simpleScriptQuran;
 	}
 
 	public QuranData getQuranData() {
@@ -67,13 +67,13 @@ public class Loader {
 		return this.hussaini_nastaleeq_font;
 	}
 
-	private Quran loadQuranText(boolean differentTanween) {
+	private Quran loadQuranText(boolean usmani) {
 		XStream xstream = new XStream(new StaxDriver());
 		xstream.processAnnotations(Quran.class);
 		xstream.autodetectAnnotations(true);
 		try (InputStream is = Loader.class
-				.getResourceAsStream(differentTanween ? quran_uthmani_different_tanween_xml_path
-						: quran_uthmani_normal_tanween_xml_path)) {
+				.getResourceAsStream(usmani ? quran_uthmani_different_tanween_xml_path
+						: quran_simple_enhanced_xml_path)) {
 			return (Quran) xstream.fromXML(is);
 
 		} catch (IOException ioe) {
