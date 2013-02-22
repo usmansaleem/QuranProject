@@ -42,6 +42,9 @@ import javax.swing.JTextPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -250,12 +253,13 @@ public class Main extends JFrame {
 		mnPara.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
 		mnPara.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnIndex.add(mnPara);
-		
+
 		menuBar.add(Box.createHorizontalGlue());
-		
+
 		mnInformation = new JMenu(Constants.MenuUrduMaloomat);
 		mnInformation.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		mnInformation.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mnInformation
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
 		initializeSuraAndParaMenus();
 
@@ -298,7 +302,7 @@ public class Main extends JFrame {
 			menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 			menu.add(menuItem);
 		}
-		
+
 		menu = new JMenu("16-30");
 		menu.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
 		menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -318,19 +322,22 @@ public class Main extends JFrame {
 			public void setLayout(LayoutManager mgr) {
 				// $hide>>$
 				super.setLayout(new BorderLayout() {
-									@Override
-									public void addLayoutComponent(Component comp,
-											Object constraints) {
-										if ("Editor".equals(constraints)) {
-											constraints = "Center";
-										} else if ("Next".equals(constraints)) {
-											constraints = "West";
-										} else if ("Previous".equals(constraints)) {
-											constraints = "East";
-										}
-										super.addLayoutComponent(comp, constraints);
-									}
-								});
+					@Override
+					public void addLayoutComponent(Component comp,
+							Object constraints) {
+						if ("Editor".equals(constraints)) {
+							constraints = "Center";
+						} else if ("Next".equals(constraints)) {
+							constraints = "West";
+						} else if ("Previous".equals(constraints)) {
+							constraints = "East";
+						} else if ("Painter".equals(constraints)) {
+							// where the hell did this come from in JSpinner
+							return;
+						}
+						super.addLayoutComponent(comp, constraints);
+					}
+				});
 				// $hide<<$
 			}
 		};
@@ -538,9 +545,6 @@ public class Main extends JFrame {
 					.getSuraAyaPageMap()
 					.get(String.valueOf(jd.getSura())
 							+ String.valueOf(jd.getAya()));
-			System.out.println(pd.getIndex() + ":"
-					+ String.valueOf(jd.getSura()) + ","
-					+ String.valueOf(jd.getAya()));
 			startPages[i++] = pd.getIndex();
 		}
 		Arrays.sort(startPages);
@@ -556,6 +560,13 @@ public class Main extends JFrame {
 	}
 
 	public static void main(String a[]) {
+		try {
+			UIManager.setLookAndFeel(UIManager
+					.getCrossPlatformLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Main m = new Main();
