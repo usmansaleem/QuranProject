@@ -16,17 +16,17 @@ Terms of Use:
 
 *Resources*
 - Quran Text
-  -- The Quran text is downloaded from http://tanzil.net/download/
-  -- The Quran meta-data is downloaded from http://tanzil.net/wiki/Quran_Metadata
-  -- The Quran translations are downloaded from http://tanzil.net/trans/
-     --- Translations in XML format are downloaded using URL pattern http://tanzil.net/trans/?transID=<ID>&type=xml
+  - The Quran text is downloaded from http://tanzil.net/download/
+  - The Quran meta-data is downloaded from http://tanzil.net/wiki/Quran_Metadata
+  - The Quran translations are downloaded from http://tanzil.net/trans/
+    - Translations in XML format are downloaded using URL pattern http://tanzil.net/trans/?transID=<ID>&type=xml
 - Fonts
-  -- me_quran_volt_newmet.ttf font is downloaded from http://arabicfonts.wikispaces.com/
-  -- hussaini-nastaleeq.ttf font is downloaded from https://github.com/khaledhosny/hussaini-nastaleeq
-  -- UthmanTN1Ver10.ttf is downloaded from http://fonts.qurancomplex.gov.sa/?page_id=608
+  - me_quran_volt_newmet.ttf font is downloaded from http://arabicfonts.wikispaces.com/
+  - hussaini-nastaleeq.ttf font is downloaded from https://github.com/khaledhosny/hussaini-nastaleeq
+  - UthmanTN1Ver10.ttf is downloaded from http://fonts.qurancomplex.gov.sa/?page_id=608
 
 - Third party libraries
-  -- XStream is used for XML to Java mapping. Available at: http://xstream.codehaus.org/
+  - XStream is used for XML to Java mapping. Available at: http://xstream.codehaus.org/
 
 *Licenses*
 - Tanzil.net Quran Text is used under following license:
@@ -56,19 +56,19 @@ Terms of Use:
   Please check updates at: http://tanzil.net/updates/
 
 - Tanzil.net Quran Meta-Data is used under following license:
-  -- http://creativecommons.org/licenses/by/3.0/
+  - http://creativecommons.org/licenses/by/3.0/
 
 - me_quran Font is used under following license:
- -- Seeking author's permission to bundle and use me_quran font. Their site allows non-commercial usage.
+ - Seeking author's permission to bundle and use me_quran font. Their site allows non-commercial usage.
 
 - Hussaini Nastaleeq Font is used under following license:
- -- https://github.com/khaledhosny/hussaini-nastaleeq/blob/master/LICENSE
+ - https://github.com/khaledhosny/hussaini-nastaleeq/blob/master/LICENSE
 
 - Uthman Taha Naskh Font is included under following license:
- -- http://fonts.qurancomplex.gov.sa/?page_id=606
+ - http://fonts.qurancomplex.gov.sa/?page_id=606
 
 - XStream is used under following license:
- -- http://xstream.codehaus.org/license.html
+ - http://xstream.codehaus.org/license.html
 
 
 
