@@ -54,9 +54,15 @@ public class SuraData {
 	 */
 	@XStreamAsAttribute
 	private int rukus;
+	
+	/**
+	 * Page number where this sura starts
+	 */
+	@XStreamAsAttribute
+	private int page;
 
 	public SuraData(int index, int ayas, int start, String name, String tname,
-			String ename, String type, int order, int rukus) {
+			String ename, String type, int order, int rukus, int page) {
 		super();
 		this.index = index;
 		this.ayas = ayas;
@@ -67,6 +73,7 @@ public class SuraData {
 		this.type = type;
 		this.order = order;
 		this.rukus = rukus;
+		this.page = page;
 	}
 
 	public int getIndex() {
@@ -103,6 +110,10 @@ public class SuraData {
 
 	public int getRukus() {
 		return rukus;
+	}
+	
+	public int getPage() {
+		return page;
 	}
 
 }

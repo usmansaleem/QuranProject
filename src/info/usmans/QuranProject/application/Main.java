@@ -153,7 +153,7 @@ public class Main extends JFrame {
 								GroupLayout.PREFERRED_SIZE).addContainerGap()));
 
 		txtpnData = new JTextPane();
-		txtpnData.setBackground(new Color(238, 232, 170));
+		txtpnData.setBackground(new Color(255, 255, 204));
 		txtpnData.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		txtpnData.setEditable(false);
 		scrollPane.setViewportView(txtpnData);
@@ -279,6 +279,7 @@ public class Main extends JFrame {
 	}
 
 	private void initializeSuraAndParaMenus() {
+		SurahMenuItemActionListener surahMenuActionListener = new SurahMenuItemActionListener();
 		int i = 1;
 		JMenu menu = new JMenu("1-9");
 		menu.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
@@ -300,6 +301,8 @@ public class Main extends JFrame {
 			menuItem.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
 					Font.BOLD, 12));
 			menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+			menuItem.setActionCommand(String.valueOf(sura.getIndex()));
+			menuItem.addActionListener(surahMenuActionListener);
 			menu.add(menuItem);
 			i++;
 		}
@@ -353,6 +356,24 @@ public class Main extends JFrame {
 			}
 		}
 
+	}
+	
+	private class SurahMenuItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				int surah = Integer.parseInt(e.getActionCommand());
+				spinner.setValue(quranData.getSuras().getSuraMap().get(surah).getPage());
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(Main.this,
+						"Invalid Action Command: " + e.getActionCommand(),
+						"Invalid Menu Action for Surahs",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+		
 	}
 
 	private JSpinner getCustomSpinner() {
