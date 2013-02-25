@@ -2,6 +2,7 @@ package info.usmans.QuranProject.model;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,7 +32,7 @@ public class Sura {
 	}
 
 	public List<Aya> getAyaList() {
-		return Collections.unmodifiableList(aya);
+		return aya;
 	}
 
 	public Map<Integer, Aya> getAyaMap() {
@@ -42,7 +43,7 @@ public class Sura {
 				ayaMap.put(_aya.getIndex(), _aya);
 			}
 		}
-		return Collections.unmodifiableMap(ayaMap);
+		return ayaMap;
 	}
 
 	public int getIndex() {

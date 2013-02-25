@@ -521,7 +521,7 @@ public class Main extends JFrame {
 			}
 
 		}
-
+		this.txtpnData.setDocument(this.doc);
 		this.txtpnData.setCaretPosition(0);
 		this.lblSuraName.setText(suraLabelText.toString());
 	}
@@ -541,7 +541,7 @@ public class Main extends JFrame {
 	 * @param i
 	 */
 	private void updateAyaText(Sura sura, int i) {
-		Aya aya = sura.getAyaMap().get(i);
+		Aya aya = sura.getAyaList().get(i-1);
 		int suraIndex = sura.getIndex();
 		String bismillahText = aya.getBismillah();
 		String ayaText = aya.getText();
@@ -551,14 +551,14 @@ public class Main extends JFrame {
 			if (i == 1 && (suraIndex == 1 || bismillahText != null)) {
 				String txt = suraIndex != 1 ? bismillahText : ayaText;
 				int offset = doc.getLength();
-				doc.insertString(doc.getLength(), txt,
+				doc.insertString(offset, txt,
 						doc.getStyle("BismillahStyle"));
 				if (suraIndex == 1) {
 					int _offset = doc.getLength();
 					char ayaNumStart = '\ufd3f';
 					char ayaNumEnd = '\ufd3e';
-					doc.insertString(doc.getLength(), ayaNumStart
-							+ getArabicAyaNumbering(i) + ayaNumEnd,
+					doc.insertString(_offset, ayaNumStart
+							+ String.valueOf(i) + ayaNumEnd,
 							doc.getStyle("AyaNumberingStyle"));
 					doc.setCharacterAttributes(_offset, doc.getLength()
 							- offset, doc.getStyle("AyaNumberingStyle"), false);
@@ -576,16 +576,14 @@ public class Main extends JFrame {
 			}
 
 			// add actual Aya text
-			StringBuilder sb = new StringBuilder();
-			sb.append(ayaText);
-			doc.insertString(doc.getLength(), sb.toString(), base);
+			doc.insertString(doc.getLength(), ayaText, base);
 
 			// add aya number
 			int offset = doc.getLength();
 			char ayaNumStart = '\ufd3f';
 			char ayaNumEnd = '\ufd3e';
-			doc.insertString(doc.getLength(), ayaNumStart
-					+ getArabicAyaNumbering(i) + ayaNumEnd,
+			doc.insertString(offset, ayaNumStart
+					+ String.valueOf(i) + ayaNumEnd,
 					doc.getStyle("AyaNumberingStyle"));
 			doc.setCharacterAttributes(offset, doc.getLength() - offset,
 					doc.getStyle("AyaNumberingStyle"), false);
@@ -609,6 +607,7 @@ public class Main extends JFrame {
 	 * gets called on loading of each page via loadPage
 	 */
 	private void initDocStyles() {
+		this.txtpnData.setDocument(new DefaultStyledDocument());
 		doc = new DefaultStyledDocument();
 
 		// base style. All ayas are displayed in this style
@@ -631,8 +630,9 @@ public class Main extends JFrame {
 		StyleConstants
 				.setAlignment(bismillahStyle, StyleConstants.ALIGN_CENTER);
 
-		this.txtpnData.setStyledDocument(doc);
 	}
+	
+	
 
 	private void initializeStartPagesofChapters() {
 		startPagesofChapters = new int[30];
