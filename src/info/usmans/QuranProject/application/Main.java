@@ -1,6 +1,7 @@
 package info.usmans.QuranProject.application;
 
 import info.usmans.QuranProject.controller.Loader;
+import info.usmans.QuranProject.controller.QuranTextType;
 import info.usmans.QuranProject.model.Aya;
 import info.usmans.QuranProject.model.JuzData;
 import info.usmans.QuranProject.model.PageData;
@@ -36,6 +37,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextPane;
 import javax.swing.JMenuBar;
@@ -54,9 +56,9 @@ public class Main extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -735356187246028596L;
-	private Quran quranText = Loader.getInstance().getUsmaniQuranText();
+	private Quran quranText = Loader.getInstance().getQuranText(
+			QuranTextType.USMANI_SPECIALTANWEEN);
 	private QuranData quranData = Loader.getInstance().getQuranData();
-	private Font quranFont = Loader.getInstance().getMeQuranFont();
 	private int totalPages = quranData.getPages().getPageList().size();
 
 	private JPanel topPanel;
@@ -69,7 +71,7 @@ public class Main extends JFrame {
 	private StyledDocument doc;
 	private Style base;
 	private JLabel lblChapterNumber;
-	private int[] startPages;
+	private int[] startPagesofChapters;
 	private JMenuBar menuBar;
 	private JRadioButtonMenuItem rdbtnmntmUsmaniText;
 	private JRadioButtonMenuItem rdbtnmntmSimpleText;
@@ -159,7 +161,7 @@ public class Main extends JFrame {
 		lblSuraName = new JLabel();
 		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSuraName.setFont(quranFont.deriveFont(16f));
+		lblSuraName.setFont(new Font("me_quran", Font.BOLD, 16));
 		topPanel.add(lblSuraName, BorderLayout.WEST);
 
 		lblChapterNumber = new JLabel("New label");
@@ -185,7 +187,8 @@ public class Main extends JFrame {
 		lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblPage.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		lblPage.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
@@ -203,7 +206,8 @@ public class Main extends JFrame {
 
 		btngrpMnQuranText = new ButtonGroup();
 		mnText = new JMenu(Constants.MenuUrduQuranText);
-		mnText.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mnText.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		mnText.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnText);
 
@@ -212,13 +216,14 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmUsmaniText);
 		rdbtnmntmUsmaniText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Main.this.quranText = Loader.getInstance().getUsmaniQuranText();
+				Main.this.quranText = Loader.getInstance().getQuranText(
+						QuranTextType.USMANI_SPECIALTANWEEN);
 				Main.this.loadPage((Integer) spinner.getModel().getValue());
 
 			}
 		});
-		rdbtnmntmUsmaniText.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
-				12));
+		rdbtnmntmUsmaniText.setFont(new Font(
+				Constants.hussaini_nastaleeq_fontFamily, Font.BOLD, 12));
 		rdbtnmntmUsmaniText.setSelected(true);
 		rdbtnmntmUsmaniText
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -229,35 +234,40 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmSimpleText);
 		rdbtnmntmSimpleText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Main.this.quranText = Loader.getInstance().getSimpleQuranText();
+				Main.this.quranText = Loader.getInstance().getQuranText(
+						QuranTextType.SIMPLE);
 				Main.this.loadPage((Integer) spinner.getModel().getValue());
 			}
 		});
-		rdbtnmntmSimpleText.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
-				12));
+		rdbtnmntmSimpleText.setFont(new Font(
+				Constants.hussaini_nastaleeq_fontFamily, Font.BOLD, 12));
 		rdbtnmntmSimpleText
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		btngrpMnQuranText.add(rdbtnmntmSimpleText);
 
 		mnIndex = new JMenu(Constants.MenuUrduIndexText);
-		mnIndex.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mnIndex.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		mnIndex.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnIndex);
 
 		mnSura = new JMenu(Constants.UrduSoorah);
-		mnSura.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mnSura.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		mnSura.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnIndex.add(mnSura);
 
 		mnPara = new JMenu(Constants.UrduChapter);
-		mnPara.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mnPara.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		mnPara.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnIndex.add(mnPara);
 
 		menuBar.add(Box.createHorizontalGlue());
 
 		mnInformation = new JMenu(Constants.MenuUrduMaloomat);
-		mnInformation.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mnInformation.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		mnInformation
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
@@ -271,7 +281,8 @@ public class Main extends JFrame {
 	private void initializeSuraAndParaMenus() {
 		int i = 1;
 		JMenu menu = new JMenu("1-9");
-		menu.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		menu.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnSura.add(menu);
 		for (SuraData sura : quranData.getSuras().getSuraList()) {
@@ -279,39 +290,67 @@ public class Main extends JFrame {
 				int nextIndex = i + 9;
 				menu = new JMenu(String.valueOf(i) + "-"
 						+ String.valueOf(nextIndex <= 114 ? nextIndex : 114));
-				menu.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+				menu.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+						Font.BOLD, 12));
 				menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 				mnSura.add(menu);
 			}
 			JMenuItem menuItem = new JMenuItem(sura.getIndex() + " - "
 					+ sura.getName());
-			menuItem.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+			menuItem.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+					Font.BOLD, 12));
 			menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 			menu.add(menuItem);
 			i++;
 		}
 
 		// populate juz
+		ChapterMenuItemActionListener chapterMenuItemActionListener = new ChapterMenuItemActionListener();
 		menu = new JMenu("1-15");
-		menu.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		menu.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnPara.add(menu);
 		for (i = 1; i <= 15; i++) {
 			JMenuItem menuItem = new JMenuItem(Constants.UrduChapter + " " + i);
-			menuItem.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+			menuItem.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+					Font.BOLD, 12));
 			menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+			menuItem.setActionCommand(String.valueOf(i));
+			menuItem.addActionListener(chapterMenuItemActionListener);
 			menu.add(menuItem);
 		}
 
 		menu = new JMenu("16-30");
-		menu.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		menu.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
 		menu.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnPara.add(menu);
 		for (i = 16; i <= 30; i++) {
 			JMenuItem menuItem = new JMenuItem(Constants.UrduChapter + " " + i);
-			menuItem.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+			menuItem.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+					Font.BOLD, 12));
 			menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+			menuItem.setActionCommand(String.valueOf(i));
+			menuItem.addActionListener(chapterMenuItemActionListener);
 			menu.add(menuItem);
+		}
+
+	}
+
+	private class ChapterMenuItemActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				int chapter = Integer.parseInt(e.getActionCommand());
+				spinner.setValue(getPageOfChapter(chapter));
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(Main.this,
+						"Invalid Action Command: " + e.getActionCommand(),
+						"Invalid Menu Action for Chapter",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		}
 
 	}
@@ -495,8 +534,10 @@ public class Main extends JFrame {
 						doc.getStyle("BismillahStyle"));
 				if (suraIndex == 1) {
 					int _offset = doc.getLength();
-					doc.insertString(doc.getLength(), "{"
-							+ getArabicAyaNumbering(i) + "}",
+					char ayaNumStart = '\ufd3f';
+					char ayaNumEnd = '\ufd3e';
+					doc.insertString(doc.getLength(), ayaNumStart
+							+ getArabicAyaNumbering(i) + ayaNumEnd,
 							doc.getStyle("AyaNumberingStyle"));
 					doc.setCharacterAttributes(_offset, doc.getLength()
 							- offset, doc.getStyle("AyaNumberingStyle"), false);
@@ -520,8 +561,11 @@ public class Main extends JFrame {
 
 			// add aya number
 			int offset = doc.getLength();
-			doc.insertString(doc.getLength(), "{" + getArabicAyaNumbering(i)
-					+ "}", doc.getStyle("AyaNumberingStyle"));
+			char ayaNumStart = '\ufd3f';
+			char ayaNumEnd = '\ufd3e';
+			doc.insertString(doc.getLength(), ayaNumStart
+					+ getArabicAyaNumbering(i) + ayaNumEnd,
+					doc.getStyle("AyaNumberingStyle"));
 			doc.setCharacterAttributes(offset, doc.getLength() - offset,
 					doc.getStyle("AyaNumberingStyle"), false);
 		} catch (BadLocationException e) {
@@ -549,13 +593,14 @@ public class Main extends JFrame {
 		// base style. All ayas are displayed in this style
 		base = StyleContext.getDefaultStyleContext().getStyle(
 				StyleContext.DEFAULT_STYLE);
-		StyleConstants.setFontFamily(base, "me_quran");
+		StyleConstants.setFontFamily(base, Constants.me_quran_FontFamily);
 		StyleConstants.setFontSize(base, 24);
 
 		// style for aya numbering. We wish to use different font than aya text
 		// here
 		Style ayaNumberingStyle = doc.addStyle("AyaNumberingStyle", base);
-		StyleConstants.setFontFamily(ayaNumberingStyle, "Hussaini Nastaleeq");
+		StyleConstants.setFontFamily(ayaNumberingStyle,
+				Constants.KFGQPC_fontFamily);
 		StyleConstants.setFontSize(ayaNumberingStyle, 18);
 
 		// style for Bismillah
@@ -569,7 +614,7 @@ public class Main extends JFrame {
 	}
 
 	private void initializeStartPagesofChapters() {
-		startPages = new int[30];
+		startPagesofChapters = new int[30];
 		int i = 0;
 		for (JuzData jd : quranData.getJuzs().getJuzList()) {
 			PageData pd = quranData
@@ -577,18 +622,22 @@ public class Main extends JFrame {
 					.getSuraAyaPageMap()
 					.get(String.valueOf(jd.getSura())
 							+ String.valueOf(jd.getAya()));
-			startPages[i++] = pd.getIndex();
+			startPagesofChapters[i++] = pd.getIndex();
 		}
-		Arrays.sort(startPages);
+		Arrays.sort(startPagesofChapters);
 	}
 
 	private int getChapterOfPage(int page) {
 		for (int j = 29; j >= 0; j--) {
-			if (page >= startPages[j]) {
+			if (page >= startPagesofChapters[j]) {
 				return j + 1;
 			}
 		}
 		return 0; // not meant to happen
+	}
+
+	private int getPageOfChapter(int chapter) {
+		return startPagesofChapters[chapter - 1];
 	}
 
 	public static void main(String a[]) {

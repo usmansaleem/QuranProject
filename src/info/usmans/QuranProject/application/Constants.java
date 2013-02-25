@@ -18,4 +18,7 @@ public interface Constants {
 	public static final String MenuUrduImaliText = "خط املائ";
 	public static final String MenuUrduIndexText = "فہرست";
 	public static final String MenuUrduMaloomat = "معلومات";
+	public static final String KFGQPC_fontFamily = "KFGQPC Uthman Taha Naskh";
+	public static final String me_quran_FontFamily = "me_quran";
+	public static final String hussaini_nastaleeq_fontFamily = "Hussaini Nastaleeq";
 }
