@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.util.Arrays;
-import java.util.LinkedList;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -58,6 +57,7 @@ public class Main extends JFrame {
 	private Quran quranText = Loader.getInstance().getUsmaniQuranText();
 	private QuranData quranData = Loader.getInstance().getQuranData();
 	private Font quranFont = Loader.getInstance().getMeQuranFont();
+	private int totalPages = quranData.getPages().getPageList().size();
 
 	private JPanel topPanel;
 	private JLabel lblSuraName;
@@ -318,10 +318,15 @@ public class Main extends JFrame {
 
 	private JSpinner getCustomSpinner() {
 		return new JSpinner() {
+
+			private static final long serialVersionUID = -4948001062221019002L;
+
 			@Override
 			public void setLayout(LayoutManager mgr) {
 				// $hide>>$
 				super.setLayout(new BorderLayout() {
+					private static final long serialVersionUID = 1453458704791041504L;
+
 					@Override
 					public void addLayoutComponent(Component comp,
 							Object constraints) {
@@ -331,9 +336,6 @@ public class Main extends JFrame {
 							constraints = "West";
 						} else if ("Previous".equals(constraints)) {
 							constraints = "East";
-						} else if ("Painter".equals(constraints)) {
-							// where the hell did this come from in JSpinner
-							return;
 						}
 						super.addLayoutComponent(comp, constraints);
 					}
@@ -353,7 +355,6 @@ public class Main extends JFrame {
 		initDocStyles();
 		StringBuilder suraLabelText = new StringBuilder();
 
-		int totalPages = quranData.getPages().getPageList().size();
 		if (pageNum <= 0 || pageNum > totalPages) {
 			throw new IllegalArgumentException("Invalid Page Number ["
 					+ pageNum + "] not in range [" + "1-" + totalPages + "]");
@@ -369,27 +370,14 @@ public class Main extends JFrame {
 		this.lblChapterNumber.setText(String.valueOf(getChapterOfPage(page
 				.getIndex())));
 
-		// special rule for page 1 - Surah Fatiha
+		// special handling for page 1 - Surah Fatiha
 		if (pageNum == 1) {
-			try {
-				int offset = doc.getLength();
-				// add Bismillah
-				doc.insertString(doc.getLength(), currentPageSura.getAyaMap()
-						.get(1).getText()
-						+ "\n", doc.getStyle("BismillahStyle"));
-				doc.setParagraphAttributes(offset, doc.getLength() - offset,
-						doc.getStyle("BismillahStyle"), false);
 
-				for (int i = 2; i <= 7; i++) {
-					Aya aya = currentPageSura.getAyaMap().get(i);
-					StringBuilder sb = new StringBuilder();
-					sb.append(aya.getText()).append(getArabicAyaNumbering(i));
-					doc.insertString(doc.getLength(), sb.toString(), base);
-				}
-			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			for (int ayaNumber = 1; ayaNumber <= currentPageSura.getAyaMap()
+					.size(); ayaNumber++) {
+				updateAyaText(currentPageSura, ayaNumber);
 			}
+
 			suraLabelText.append(Constants.ArabicSoorah).append(" ")
 					.append(currentPageSura.getName());
 
@@ -404,33 +392,34 @@ public class Main extends JFrame {
 			if (currentPageStartSura == nextPageStartSura) {
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
-				for (int i = currentPageStartAya; i < nextPageStartAya; i++) {
-					updateAyaText(currentPageSura, i);
+				for (int ayaNumber = currentPageStartAya; ayaNumber < nextPageStartAya; ayaNumber++) {
+					updateAyaText(currentPageSura, ayaNumber);
 				}
 			} else if (currentPageStartSura < nextPageStartSura) {
 				// page either ends sura on this page, or contain multiple
 				// suras.
 
 				// add rest of ayas of current sura
-				for (int i = currentPageStartAya; i <= currentPageSura
-						.getAyaMap().size(); i++) {
-					updateAyaText(currentPageSura, i);
+				for (int ayaNumber = currentPageStartAya; ayaNumber <= currentPageSura
+						.getAyaMap().size(); ayaNumber++) {
+					updateAyaText(currentPageSura, ayaNumber);
 				}
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
 
 				// add other suras on current page (if required)
-				for (int i = currentPageStartSura + 1; i < nextPageStartSura; i++) {
-					Sura otherSura = quranText.getSuraMap().get(i);
+				for (int suraNumber = currentPageStartSura + 1; suraNumber < nextPageStartSura; suraNumber++) {
+					Sura otherSura = quranText.getSuraMap().get(suraNumber);
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(otherSura.getName());
-					for (int j = 1; j <= otherSura.getAyaMap().size(); j++) {
-						if (j == 1) {
+					for (int ayaNumber = 1; ayaNumber <= otherSura.getAyaMap()
+							.size(); ayaNumber++) {
+						if (ayaNumber == 1) {
 							// start of Bismillah in middle of page
 							addLineFeed();
 						}
-						updateAyaText(otherSura, j);
+						updateAyaText(otherSura, ayaNumber);
 					}
 				}
 
@@ -441,12 +430,12 @@ public class Main extends JFrame {
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(nextPageSura.getName());
-					for (int i = 1; i < nextPageStartAya; i++) {
-						if (i == 1) {
+					for (int ayaNumber = 1; ayaNumber < nextPageStartAya; ayaNumber++) {
+						if (ayaNumber == 1) {
 							// start of Bismillah in middle of page
 							addLineFeed();
 						}
-						updateAyaText(nextPageSura, i);
+						updateAyaText(nextPageSura, ayaNumber);
 					}
 				}
 
@@ -461,12 +450,13 @@ public class Main extends JFrame {
 				if (i != 114) {
 					suraLabelText.append(Constants.ArabicComma);
 				}
-				for (int j = 1; j <= lastPageSura.getAyaMap().size(); j++) {
-					if (i > currentPageStartSura && j == 1) {
+				for (int ayaNumber = 1; ayaNumber <= lastPageSura.getAyaMap()
+						.size(); ayaNumber++) {
+					if (i > currentPageStartSura && ayaNumber == 1) {
 						// start of bismillah in middle of page
 						addLineFeed();
 					}
-					updateAyaText(lastPageSura, j);
+					updateAyaText(lastPageSura, ayaNumber);
 				}
 			}
 
@@ -484,49 +474,91 @@ public class Main extends JFrame {
 		}
 	}
 
+	/**
+	 * Add aya text on JTextPane
+	 * 
+	 * @param sura
+	 * @param i
+	 */
 	private void updateAyaText(Sura sura, int i) {
 		Aya aya = sura.getAyaMap().get(i);
+		int suraIndex = sura.getIndex();
+		String bismillahText = aya.getBismillah();
+		String ayaText = aya.getText();
 		try {
-			if (i == 1 && aya.getBismillah() != null) {
-
+			// add Bismillah if required. Special handling required for sura
+			// Fatiha and Sura Toba
+			if (i == 1 && (suraIndex == 1 || bismillahText != null)) {
+				String txt = suraIndex != 1 ? bismillahText : ayaText;
 				int offset = doc.getLength();
-				doc.insertString(doc.getLength(), aya.getBismillah() + "\n",
+				doc.insertString(doc.getLength(), txt,
 						doc.getStyle("BismillahStyle"));
+				if (suraIndex == 1) {
+					int _offset = doc.getLength();
+					doc.insertString(doc.getLength(), "{"
+							+ getArabicAyaNumbering(i) + "}",
+							doc.getStyle("AyaNumberingStyle"));
+					doc.setCharacterAttributes(_offset, doc.getLength()
+							- offset, doc.getStyle("AyaNumberingStyle"), false);
+				}
+
+				doc.insertString(doc.getLength(), "\n",
+						doc.getStyle("BismillahStyle"));
+
 				doc.setParagraphAttributes(offset, doc.getLength() - offset,
 						doc.getStyle("BismillahStyle"), false);
 
+				if (suraIndex == 1) {
+					return;
+				}
 			}
 
+			// add actual Aya text
 			StringBuilder sb = new StringBuilder();
-			sb.append(aya.getText()).append(getArabicAyaNumbering(i));
+			sb.append(ayaText);
 			doc.insertString(doc.getLength(), sb.toString(), base);
+
+			// add aya number
+			int offset = doc.getLength();
+			doc.insertString(doc.getLength(), "{" + getArabicAyaNumbering(i)
+					+ "}", doc.getStyle("AyaNumberingStyle"));
+			doc.setCharacterAttributes(offset, doc.getLength() - offset,
+					doc.getStyle("AyaNumberingStyle"), false);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private String getArabicAyaNumbering(int number) {
+		String strNum = String.valueOf(number);
 		StringBuilder sb = new StringBuilder();
-		int _num = number;
-		LinkedList<Integer> stack = new LinkedList<Integer>();
-		while (_num > 0) {
-			stack.push(_num % 10);
-			_num = _num / 10;
-		}
-		while (!stack.isEmpty()) {
-			int unicode = stack.pop() + 0x660;
-			sb.append(Character.toChars(unicode));
+		for (int i = 0; i < strNum.length(); i++) {
+			sb.append(Character.toChars(Integer.parseInt(String.valueOf(strNum
+					.charAt(i))) + 0x660));
 		}
 		return sb.toString();
 	}
 
+	/**
+	 * Initialize various style which are used by main textpane. This method
+	 * gets called on loading of each page via loadPage
+	 */
 	private void initDocStyles() {
 		doc = new DefaultStyledDocument();
+
+		// base style. All ayas are displayed in this style
 		base = StyleContext.getDefaultStyleContext().getStyle(
 				StyleContext.DEFAULT_STYLE);
 		StyleConstants.setFontFamily(base, "me_quran");
 		StyleConstants.setFontSize(base, 24);
 
+		// style for aya numbering. We wish to use different font than aya text
+		// here
+		Style ayaNumberingStyle = doc.addStyle("AyaNumberingStyle", base);
+		StyleConstants.setFontFamily(ayaNumberingStyle, "Hussaini Nastaleeq");
+		StyleConstants.setFontSize(ayaNumberingStyle, 18);
+
+		// style for Bismillah
 		Style bismillahStyle = doc.addStyle("BismillahStyle", base);
 		StyleConstants.setBold(bismillahStyle, true);
 		StyleConstants.setSpaceBelow(bismillahStyle, 10f);
