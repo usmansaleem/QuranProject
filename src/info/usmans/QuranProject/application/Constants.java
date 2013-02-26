@@ -21,4 +21,7 @@ public interface Constants {
 	public static final String KFGQPC_fontFamily = "KFGQPC Uthman Taha Naskh";
 	public static final String me_quran_FontFamily = "me_quran";
 	public static final String hussaini_nastaleeq_fontFamily = "Hussaini Nastaleeq";
+	public static final String UrduTranslation = "ترجمہ";
+	public static final String MenuUrduTranslationColumn1 = "کالم اول";
+	public static final String MenuUrduTranslationColumn2 = "کالم دوئم";
 }

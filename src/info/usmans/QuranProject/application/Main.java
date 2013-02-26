@@ -2,6 +2,7 @@ package info.usmans.QuranProject.application;
 
 import info.usmans.QuranProject.controller.Loader;
 import info.usmans.QuranProject.controller.QuranTextType;
+import info.usmans.QuranProject.controller.QuranTranslationID;
 import info.usmans.QuranProject.model.Aya;
 import info.usmans.QuranProject.model.JuzData;
 import info.usmans.QuranProject.model.PageData;
@@ -31,7 +32,6 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -57,8 +57,7 @@ public class Main extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -735356187246028596L;
-	private Quran quranText = Loader.getInstance().getQuranText(
-			QuranTextType.USMANI_SPECIALTANWEEN);
+	private Quran[] quranText = new Quran[3];
 	private QuranData quranData = Loader.getInstance().getQuranData();
 	private int totalPages = quranData.getPages().getPageList().size();
 
@@ -69,8 +68,6 @@ public class Main extends JFrame {
 	private JLabel lblPage;
 	private JLabel lblOf;
 	private JTextPane txtpnData;
-	private StyledDocument doc;
-	private Style base;
 	private JLabel lblChapterNumber;
 	private int[] startPagesofChapters;
 	private JMenuBar menuBar;
@@ -88,6 +85,9 @@ public class Main extends JFrame {
 	private JScrollPane scrollPane_Trans2;
 	private JTextPane textPaneTrans1;
 	private JTextPane textPaneTrans2;
+	private JMenu mnTranslation;
+	private JMenu menuTranslationCol1;
+	private JMenu menuTranslationCol2;
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -100,62 +100,102 @@ public class Main extends JFrame {
 		topPanel.setLayout(new BorderLayout(0, 0));
 
 		bottomPanel = new JPanel();
-		
+
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.65);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(bottomPanel, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(topPanel, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(bottomPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
-		);
-		
-				JScrollPane scrollPane = new JScrollPane();
-				splitPane.setRightComponent(scrollPane);
-				scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		groupLayout
+				.setHorizontalGroup(groupLayout
+						.createParallelGroup(Alignment.TRAILING)
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.TRAILING)
+														.addGroup(
+																Alignment.LEADING,
+																groupLayout
+																		.createSequentialGroup()
+																		.addContainerGap()
+																		.addComponent(
+																				splitPane,
+																				GroupLayout.DEFAULT_SIZE,
+																				668,
+																				Short.MAX_VALUE))
+														.addGroup(
+																Alignment.LEADING,
+																groupLayout
+																		.createSequentialGroup()
+																		.addContainerGap()
+																		.addComponent(
+																				bottomPanel,
+																				GroupLayout.DEFAULT_SIZE,
+																				668,
+																				Short.MAX_VALUE))
+														.addGroup(
+																Alignment.LEADING,
+																groupLayout
+																		.createSequentialGroup()
+																		.addGap(12)
+																		.addComponent(
+																				topPanel,
+																				GroupLayout.DEFAULT_SIZE,
+																				668,
+																				Short.MAX_VALUE)))
+										.addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				groupLayout
+						.createSequentialGroup()
+						.addComponent(topPanel, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 527,
+								Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(bottomPanel, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addContainerGap()));
+
+		JScrollPane scrollPane = new JScrollPane();
+		splitPane.setRightComponent(scrollPane);
+		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		txtpnData = new JTextPane();
 		txtpnData.setBackground(new Color(255, 255, 204));
 		txtpnData.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		txtpnData.setEditable(false);
 		scrollPane.setViewportView(txtpnData);
-		
+
 		leftSplitPane = new JSplitPane();
 		leftSplitPane.setOneTouchExpandable(true);
 		leftSplitPane.setResizeWeight(0.5);
 		splitPane.setLeftComponent(leftSplitPane);
-		
+
 		scrollPane_Trans1 = new JScrollPane();
+		scrollPane_Trans1
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setRightComponent(scrollPane_Trans1);
-		
+
 		textPaneTrans1 = new JTextPane();
+		textPaneTrans1.setEditable(false);
+		textPaneTrans1
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans1.setViewportView(textPaneTrans1);
-		
+
 		scrollPane_Trans2 = new JScrollPane();
+		scrollPane_Trans2
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setLeftComponent(scrollPane_Trans2);
-		
+
 		textPaneTrans2 = new JTextPane();
+		textPaneTrans2.setEditable(false);
+		textPaneTrans2
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans2.setViewportView(textPaneTrans2);
 
 		lblSuraName = new JLabel();
@@ -174,7 +214,9 @@ public class Main extends JFrame {
 				Object obj = spinner.getModel().getValue();
 				if (obj instanceof Integer) {
 					// load page
-					loadPage((Integer) obj);
+					loadPage(0, (Integer) obj);
+					loadPage(1, (Integer) obj);
+					loadPage(2, (Integer) obj);
 				}
 			}
 		});
@@ -216,9 +258,9 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmUsmaniText);
 		rdbtnmntmUsmaniText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Main.this.quranText = Loader.getInstance().getQuranText(
+				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.USMANI_SPECIALTANWEEN);
-				Main.this.loadPage((Integer) spinner.getModel().getValue());
+				Main.this.loadPage(0, (Integer) spinner.getModel().getValue());
 
 			}
 		});
@@ -234,9 +276,9 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmSimpleText);
 		rdbtnmntmSimpleText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Main.this.quranText = Loader.getInstance().getQuranText(
+				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.SIMPLE);
-				Main.this.loadPage((Integer) spinner.getModel().getValue());
+				Main.this.loadPage(0, (Integer) spinner.getModel().getValue());
 			}
 		});
 		rdbtnmntmSimpleText.setFont(new Font(
@@ -263,6 +305,27 @@ public class Main extends JFrame {
 		mnPara.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mnIndex.add(mnPara);
 
+		mnTranslation = new JMenu(Constants.UrduTranslation);
+		mnTranslation
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mnTranslation.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
+				Font.BOLD, 12));
+		menuBar.add(mnTranslation);
+
+		menuTranslationCol1 = new JMenu(Constants.MenuUrduTranslationColumn1);
+		menuTranslationCol1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
+				12));
+		menuTranslationCol1
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mnTranslation.add(menuTranslationCol1);
+
+		menuTranslationCol2 = new JMenu(Constants.MenuUrduTranslationColumn2);
+		menuTranslationCol2.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
+				12));
+		menuTranslationCol2
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mnTranslation.add(menuTranslationCol2);
+
 		menuBar.add(Box.createHorizontalGlue());
 
 		mnInformation = new JMenu(Constants.MenuUrduMaloomat);
@@ -271,17 +334,31 @@ public class Main extends JFrame {
 		mnInformation
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
-		
-		//non GUI Initialization
-		initializeSuraAndParaMenus();
 
+		initializeSubMenus();
+
+		// non GUI Initialization
+		initQuranText();
 		initializeStartPagesofChapters();
-		
-		loadPage(1);
+
+		loadPage(0, 1);
+		loadPage(1, 1);
+		loadPage(2, 1);
 
 	}
 
-	private void initializeSuraAndParaMenus() {
+	private void initQuranText() {
+		// each array hold data for each column
+		quranText[0] = Loader.getInstance().getQuranText(
+				QuranTextType.USMANI_SPECIALTANWEEN);
+		quranText[1] = Loader.getInstance().getQuranTranslation(
+				QuranTranslationID.UR_MAUDUDI);
+		quranText[2] = Loader.getInstance().getQuranTranslation(
+				QuranTranslationID.UR_AHMED_RAZA_KHAN);
+
+	}
+
+	private void initializeSubMenus() {
 		SurahMenuItemActionListener surahMenuActionListener = new SurahMenuItemActionListener();
 		int i = 1;
 		JMenu menu = new JMenu("1-9");
@@ -342,6 +419,55 @@ public class Main extends JFrame {
 			menu.add(menuItem);
 		}
 
+		// populate translations
+		TranslationCol1 col1AL = new TranslationCol1();
+		TranslationCol2 col2AL = new TranslationCol2();
+		for (QuranTranslationID translations : QuranTranslationID.values()) {
+			JMenuItem menuItem1 = new JMenuItem(translations.toString());
+			menuItem1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+			menuItem1
+					.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+			JMenuItem menuItem2 = new JMenuItem(translations.toString());
+			menuItem2.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+			menuItem2
+					.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+			menuTranslationCol1.add(menuItem1);
+			menuTranslationCol2.add(menuItem2);
+			// TODO: Add Action Listener
+			menuItem1.setActionCommand(translations.name());
+			menuItem2.setActionCommand(translations.name());
+			menuItem1.addActionListener(col1AL);
+			menuItem2.addActionListener(col2AL);
+		}
+
+	}
+
+	private class TranslationCol1 implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String transValue = e.getActionCommand();
+			QuranTranslationID translation = QuranTranslationID
+					.valueOf(transValue);
+			quranText[1] = Loader.getInstance()
+					.getQuranTranslation(translation);
+			loadPage(1, ((Integer) spinner.getValue()).intValue());
+
+		}
+
+	}
+
+	private class TranslationCol2 implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String transValue = e.getActionCommand();
+			QuranTranslationID translation = QuranTranslationID
+					.valueOf(transValue);
+			quranText[2] = Loader.getInstance()
+					.getQuranTranslation(translation);
+			loadPage(2, ((Integer) spinner.getValue()).intValue());
+		}
 	}
 
 	private class ChapterMenuItemActionListener implements ActionListener {
@@ -360,23 +486,24 @@ public class Main extends JFrame {
 		}
 
 	}
-	
+
 	private class SurahMenuItemActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
 				int surah = Integer.parseInt(e.getActionCommand());
-				spinner.setValue(quranData.getSuras().getSuraMap().get(surah).getPage());
+				spinner.setValue(quranData.getSuras().getSuraMap().get(surah)
+						.getPage());
 			} catch (NumberFormatException nfe) {
 				JOptionPane.showMessageDialog(Main.this,
 						"Invalid Action Command: " + e.getActionCommand(),
 						"Invalid Menu Action for Surahs",
 						JOptionPane.ERROR_MESSAGE);
 			}
-			
+
 		}
-		
+
 	}
 
 	private JSpinner getCustomSpinner() {
@@ -414,8 +541,8 @@ public class Main extends JFrame {
 	 * @param page
 	 * @return
 	 */
-	private void loadPage(int pageNum) {
-		initDocStyles();
+	private void loadPage(int col, int pageNum) {
+		DefaultStyledDocument doc = initDocStyles(col);
 		StringBuilder suraLabelText = new StringBuilder();
 
 		if (pageNum <= 0 || pageNum > totalPages) {
@@ -427,7 +554,8 @@ public class Main extends JFrame {
 		PageData page = quranData.getPages().getPageMap().get(pageNum);
 		int currentPageStartSura = page.getSura();
 		int currentPageStartAya = page.getAya();
-		Sura currentPageSura = quranText.getSuraMap().get(currentPageStartSura);
+		Sura currentPageSura = quranText[col].getSuraMap().get(
+				currentPageStartSura);
 
 		// which chapter number belong to this page?
 		this.lblChapterNumber.setText(String.valueOf(getChapterOfPage(page
@@ -438,8 +566,9 @@ public class Main extends JFrame {
 
 			for (int ayaNumber = 1; ayaNumber <= currentPageSura.getAyaMap()
 					.size(); ayaNumber++) {
-				updateAyaText(currentPageSura, ayaNumber);
+				updateAyaText(doc, currentPageSura, ayaNumber);
 			}
+			addLineFeed(doc);
 
 			suraLabelText.append(Constants.ArabicSoorah).append(" ")
 					.append(currentPageSura.getName());
@@ -456,7 +585,7 @@ public class Main extends JFrame {
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
 				for (int ayaNumber = currentPageStartAya; ayaNumber < nextPageStartAya; ayaNumber++) {
-					updateAyaText(currentPageSura, ayaNumber);
+					updateAyaText(doc, currentPageSura, ayaNumber);
 				}
 			} else if (currentPageStartSura < nextPageStartSura) {
 				// page either ends sura on this page, or contain multiple
@@ -465,14 +594,15 @@ public class Main extends JFrame {
 				// add rest of ayas of current sura
 				for (int ayaNumber = currentPageStartAya; ayaNumber <= currentPageSura
 						.getAyaMap().size(); ayaNumber++) {
-					updateAyaText(currentPageSura, ayaNumber);
+					updateAyaText(doc, currentPageSura, ayaNumber);
 				}
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
 
 				// add other suras on current page (if required)
 				for (int suraNumber = currentPageStartSura + 1; suraNumber < nextPageStartSura; suraNumber++) {
-					Sura otherSura = quranText.getSuraMap().get(suraNumber);
+					Sura otherSura = quranText[col].getSuraMap()
+							.get(suraNumber);
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(otherSura.getName());
@@ -480,15 +610,15 @@ public class Main extends JFrame {
 							.size(); ayaNumber++) {
 						if (ayaNumber == 1) {
 							// start of Bismillah in middle of page
-							addLineFeed();
+							addLineFeed(doc);
 						}
-						updateAyaText(otherSura, ayaNumber);
+						updateAyaText(doc, otherSura, ayaNumber);
 					}
 				}
 
 				// does nextPageStartSura starts on this page?
 				if (nextPageStartAya > 1) {
-					Sura nextPageSura = quranText.getSuraMap().get(
+					Sura nextPageSura = quranText[col].getSuraMap().get(
 							nextPageStartSura);
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
@@ -496,9 +626,9 @@ public class Main extends JFrame {
 					for (int ayaNumber = 1; ayaNumber < nextPageStartAya; ayaNumber++) {
 						if (ayaNumber == 1) {
 							// start of Bismillah in middle of page
-							addLineFeed();
+							addLineFeed(doc);
 						}
-						updateAyaText(nextPageSura, ayaNumber);
+						updateAyaText(doc, nextPageSura, ayaNumber);
 					}
 				}
 
@@ -507,7 +637,7 @@ public class Main extends JFrame {
 		} else {
 			// logic for last page
 			for (int i = currentPageStartSura; i <= 114; i++) {
-				Sura lastPageSura = quranText.getSuraMap().get(i);
+				Sura lastPageSura = quranText[col].getSuraMap().get(i);
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(lastPageSura.getName());
 				if (i != 114) {
@@ -517,21 +647,29 @@ public class Main extends JFrame {
 						.size(); ayaNumber++) {
 					if (i > currentPageStartSura && ayaNumber == 1) {
 						// start of bismillah in middle of page
-						addLineFeed();
+						addLineFeed(doc);
 					}
-					updateAyaText(lastPageSura, ayaNumber);
+					updateAyaText(doc, lastPageSura, ayaNumber);
 				}
 			}
 
 		}
-		this.txtpnData.setDocument(this.doc);
-		this.txtpnData.setCaretPosition(0);
-		this.lblSuraName.setText(suraLabelText.toString());
+		if (col == 0) {
+			this.txtpnData.setDocument(doc);
+			this.txtpnData.setCaretPosition(0);
+			this.lblSuraName.setText(suraLabelText.toString());
+		} else if (col == 1) {
+			this.textPaneTrans1.setDocument(doc);
+			this.textPaneTrans1.setCaretPosition(0);
+		} else if (col == 2) {
+			this.textPaneTrans2.setDocument(doc);
+			this.textPaneTrans2.setCaretPosition(0);
+		}
 	}
 
-	private void addLineFeed() {
+	private void addLineFeed(DefaultStyledDocument doc) {
 		try {
-			doc.insertString(doc.getLength(), "\n", base);
+			doc.insertString(doc.getLength(), "\n", doc.getStyle("BaseStyle"));
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -543,8 +681,8 @@ public class Main extends JFrame {
 	 * @param sura
 	 * @param i
 	 */
-	private void updateAyaText(Sura sura, int i) {
-		Aya aya = sura.getAyaList().get(i-1);
+	private void updateAyaText(DefaultStyledDocument doc, Sura sura, int i) {
+		Aya aya = sura.getAyaList().get(i - 1);
 		int suraIndex = sura.getIndex();
 		String bismillahText = aya.getBismillah();
 		String ayaText = aya.getText();
@@ -556,13 +694,13 @@ public class Main extends JFrame {
 			if (i == 1 && (suraIndex == 1 || bismillahText != null)) {
 				String txt = suraIndex != 1 ? bismillahText : ayaText;
 				int offset = doc.getLength();
-				
+
 				if (suraIndex == 1) {
-					
-					txt = txt + ayaNumStart
-							+ getArabicAyaNumbering(i) + ayaNumEnd;
+
+					txt = txt + ayaNumStart + getArabicAyaNumbering(i)
+							+ ayaNumEnd;
 				}
-				
+
 				doc.insertString(offset, txt + "\n",
 						doc.getStyle("BismillahStyle"));
 
@@ -576,7 +714,8 @@ public class Main extends JFrame {
 
 			// add actual Aya text
 			doc.insertString(doc.getLength(), ayaText + ayaNumStart
-					+ getArabicAyaNumbering(i) + ayaNumEnd + " ", base);
+					+ getArabicAyaNumbering(i) + ayaNumEnd + " ",
+					doc.getStyle("BaseStyle"));
 
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -597,27 +736,42 @@ public class Main extends JFrame {
 	 * Initialize various style which are used by main textpane. This method
 	 * gets called on loading of each page via loadPage
 	 */
-	private void initDocStyles() {
-		this.txtpnData.setDocument(new DefaultStyledDocument());
-		doc = new DefaultStyledDocument();
-
+	private DefaultStyledDocument initDocStyles(int col) {
 		// base style. All ayas are displayed in this style
-		base = StyleContext.getDefaultStyleContext().getStyle(
+		Style defaultStyle = StyleContext.getDefaultStyleContext().getStyle(
 				StyleContext.DEFAULT_STYLE);
-		StyleConstants.setFontFamily(base, Constants.me_quran_FontFamily);
-		StyleConstants.setFontSize(base, 24);
-		StyleConstants.setAlignment(base, StyleConstants.ALIGN_JUSTIFIED);
+		DefaultStyledDocument doc = null;
+		Style base = null;
+		if (col == 0) {
+			this.txtpnData.setDocument(new DefaultStyledDocument());
+			doc = new DefaultStyledDocument();
+			base = doc.addStyle("BaseStyle", defaultStyle);
+			StyleConstants.setFontFamily(base, Constants.me_quran_FontFamily);
+			StyleConstants.setFontSize(base, 24);
+		} else if (col == 1) {
+			this.textPaneTrans1.setDocument(new DefaultStyledDocument());
+			doc = new DefaultStyledDocument();
+			base = doc.addStyle("BaseStyle", defaultStyle);
+			StyleConstants.setFontFamily(base, Constants.KFGQPC_fontFamily);
+			StyleConstants.setFontSize(base, 20);
 
+		} else if (col == 2) {
+			this.textPaneTrans2.setDocument(new DefaultStyledDocument());
+			doc = new DefaultStyledDocument();
+			base = doc.addStyle("BaseStyle", defaultStyle);
+			StyleConstants.setFontFamily(base, Constants.KFGQPC_fontFamily);
+			StyleConstants.setFontSize(base, 20);
+
+		}
+		// StyleConstants.setAlignment(base, StyleConstants.ALIGN_JUSTIFIED);
 		// style for Bismillah
 		Style bismillahStyle = doc.addStyle("BismillahStyle", base);
 		StyleConstants.setBold(bismillahStyle, true);
-		//StyleConstants.setSpaceBelow(bismillahStyle, 10f);
 		StyleConstants
 				.setAlignment(bismillahStyle, StyleConstants.ALIGN_CENTER);
+		return doc;
 
 	}
-	
-	
 
 	private void initializeStartPagesofChapters() {
 		startPagesofChapters = new int[30];
@@ -659,8 +813,9 @@ public class Main extends JFrame {
 				Main m = new Main();
 				m.setSize(1024, 768);
 				m.setVisible(true);
-				//Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				//m.setLocation(dim.width/2-m.getSize().width/2, dim.height/2-m.getSize().height/2);
+				// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				// m.setLocation(dim.width/2-m.getSize().width/2,
+				// dim.height/2-m.getSize().height/2);
 				m.setLocationRelativeTo(null);
 			}
 		});

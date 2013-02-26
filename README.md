@@ -20,6 +20,17 @@ Terms of Use:
   - The Quran meta-data is downloaded from http://tanzil.net/wiki/Quran_Metadata
   - The Quran translations are downloaded from http://tanzil.net/trans/
     - Translations in XML format are downloaded using URL pattern http://tanzil.net/trans/?transID=<ID>&type=xml
+    
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml ابوالاعلی مودودی 
+    http://tanzil.net/trans/?transID=ur.kanzuliman&type=xml احمد رضا خان
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    http://tanzil.net/trans/?transID=ur.maududi&type=xml
+    
+    
 - Fonts
   - me_quran_volt_newmet.ttf font is downloaded from http://arabicfonts.wikispaces.com/
   - hussaini-nastaleeq.ttf font is downloaded from https://github.com/khaledhosny/hussaini-nastaleeq

@@ -5,6 +5,7 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.EnumMap;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -24,6 +25,8 @@ public class Loader {
 	private Font hussaini_nastaleeq_font;
 	private Font KFGQPC_font;
 	private Quran quranText[] = new Quran[3];
+	private EnumMap<QuranTranslationID, Quran> quranTranslationMap = new EnumMap<>(QuranTranslationID.class);
+	
 
 	/**
 	 * tanween to be used by me_quran font.
@@ -85,6 +88,16 @@ public class Loader {
 		}
 		return null;
 	}
+	
+	public Quran getQuranTranslation(QuranTranslationID translationID) {
+		Quran _quranTranslation = quranTranslationMap.get(translationID);
+		if(_quranTranslation == null) {
+			_quranTranslation = loadQuranTranslationFromXML(translationID);
+			quranTranslationMap.put(translationID, _quranTranslation);
+		}
+		
+		return _quranTranslation;
+	}
 
 	private Quran loadQuranTextFromXML(String path) {
 		XStream xstream = new XStream(new StaxDriver());
@@ -96,6 +109,21 @@ public class Loader {
 
 		} catch (IOException ioe) {
 			System.err.println("Error loading Quran text: " + ioe.getMessage());
+		}
+		return null;
+	}
+	
+	private Quran loadQuranTranslationFromXML(QuranTranslationID transID) {
+		System.out.println("Loading translation: " + transID.getResourcePath());
+		XStream xstream = new XStream(new StaxDriver());
+		xstream.processAnnotations(Quran.class);
+		xstream.autodetectAnnotations(true);
+
+		try (InputStream is = Loader.class.getResourceAsStream(transID.getResourcePath())) {
+			return (Quran) xstream.fromXML(is);
+
+		} catch (IOException ioe) {
+			System.err.println("Error loading Quran translation: " + ioe.getMessage());
 		}
 		return null;
 	}
