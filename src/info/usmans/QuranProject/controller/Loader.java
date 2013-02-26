@@ -28,13 +28,13 @@ public class Loader {
 	/**
 	 * tanween to be used by me_quran font.
 	 */
-	private static final String quran_uthmani_different_tanween_xml_path = "../resources/quran-uthmani-different-tanween.xml";
-	private static final String quran_uthmani_standard_xml_path = "../resources/quran-uthmani.xml";
-	private static final String quran_simple_enhanced_xml_path = "../resources/quran-simple-enhanced.xml";
-	private static final String quran_data_xml_path = "../resources/quran-data.xml";
-	private static final String me_quran_font_path = "../resources/me_quran_volt_newmet.ttf";
-	private static final String hussaini_nastaleeq_font_path = "../resources/hussaini-nastaleeq.ttf";
-	private static final String KFGQPC_font_path = "../resources/UthmanTN1Ver10.otf";
+	private static final String quran_uthmani_different_tanween_xml_path = "../resources/qurantext/quran-uthmani-different-tanween.xml";
+	private static final String quran_uthmani_standard_xml_path = "../resources/qurantext/quran-uthmani.xml";
+	private static final String quran_simple_enhanced_xml_path = "../resources/qurantext/quran-simple-enhanced.xml";
+	private static final String quran_data_xml_path = "../resources/qurantext/quran-data.xml";
+	private static final String me_quran_font_path = "../resources/fonts/me_quran_volt_newmet.ttf";
+	private static final String hussaini_nastaleeq_font_path = "../resources/fonts/hussaini-nastaleeq.ttf";
+	private static final String KFGQPC_font_path = "../resources/fonts/UthmanTN1Ver10.otf";
 
 	private static Loader loader = new Loader();
 
