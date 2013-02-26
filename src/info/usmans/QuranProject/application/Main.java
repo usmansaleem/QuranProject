@@ -50,6 +50,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
+import javax.swing.JSplitPane;
 
 public class Main extends JFrame {
 	/**
@@ -81,6 +82,12 @@ public class Main extends JFrame {
 	private JMenu mnSura;
 	private JMenu mnPara;
 	private JMenu mnInformation;
+	private JSplitPane splitPane;
+	private JSplitPane leftSplitPane;
+	private JScrollPane scrollPane_Trans1;
+	private JScrollPane scrollPane_Trans2;
+	private JTextPane textPaneTrans1;
+	private JTextPane textPaneTrans2;
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -88,75 +95,68 @@ public class Main extends JFrame {
 		setTitle("Quran Project");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
 		topPanel = new JPanel();
 		topPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		topPanel.setLayout(new BorderLayout(0, 0));
 
 		bottomPanel = new JPanel();
+		
+		splitPane = new JSplitPane();
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setResizeWeight(0.65);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.TRAILING)
-														.addGroup(
-																Alignment.LEADING,
-																groupLayout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(
-																				bottomPanel,
-																				GroupLayout.DEFAULT_SIZE,
-																				668,
-																				Short.MAX_VALUE))
-														.addGroup(
-																Alignment.LEADING,
-																groupLayout
-																		.createSequentialGroup()
-																		.addGap(12)
-																		.addGroup(
-																				groupLayout
-																						.createParallelGroup(
-																								Alignment.LEADING)
-																						.addComponent(
-																								scrollPane,
-																								GroupLayout.DEFAULT_SIZE,
-																								668,
-																								Short.MAX_VALUE)
-																						.addComponent(
-																								topPanel,
-																								GroupLayout.DEFAULT_SIZE,
-																								668,
-																								Short.MAX_VALUE))))
-										.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addComponent(topPanel, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE,
-								376, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(bottomPanel, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE).addContainerGap()));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(bottomPanel, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addGap(12)
+							.addComponent(topPanel, GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(bottomPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
+		
+				JScrollPane scrollPane = new JScrollPane();
+				splitPane.setRightComponent(scrollPane);
+				scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		txtpnData = new JTextPane();
 		txtpnData.setBackground(new Color(255, 255, 204));
 		txtpnData.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		txtpnData.setEditable(false);
 		scrollPane.setViewportView(txtpnData);
+		
+		leftSplitPane = new JSplitPane();
+		leftSplitPane.setOneTouchExpandable(true);
+		leftSplitPane.setResizeWeight(0.5);
+		splitPane.setLeftComponent(leftSplitPane);
+		
+		scrollPane_Trans1 = new JScrollPane();
+		leftSplitPane.setRightComponent(scrollPane_Trans1);
+		
+		textPaneTrans1 = new JTextPane();
+		scrollPane_Trans1.setViewportView(textPaneTrans1);
+		
+		scrollPane_Trans2 = new JScrollPane();
+		leftSplitPane.setLeftComponent(scrollPane_Trans2);
+		
+		textPaneTrans2 = new JTextPane();
+		scrollPane_Trans2.setViewportView(textPaneTrans2);
 
 		lblSuraName = new JLabel();
 		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -271,9 +271,12 @@ public class Main extends JFrame {
 		mnInformation
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
+		
+		//non GUI Initialization
 		initializeSuraAndParaMenus();
 
 		initializeStartPagesofChapters();
+		
 		loadPage(1);
 
 	}
@@ -545,26 +548,22 @@ public class Main extends JFrame {
 		int suraIndex = sura.getIndex();
 		String bismillahText = aya.getBismillah();
 		String ayaText = aya.getText();
+		char ayaNumStart = '\ufd3f';
+		char ayaNumEnd = '\ufd3e';
 		try {
 			// add Bismillah if required. Special handling required for sura
 			// Fatiha and Sura Toba
 			if (i == 1 && (suraIndex == 1 || bismillahText != null)) {
 				String txt = suraIndex != 1 ? bismillahText : ayaText;
 				int offset = doc.getLength();
-				doc.insertString(offset, txt,
-						doc.getStyle("BismillahStyle"));
+				
 				if (suraIndex == 1) {
-					int _offset = doc.getLength();
-					char ayaNumStart = '\ufd3f';
-					char ayaNumEnd = '\ufd3e';
-					doc.insertString(_offset, ayaNumStart
-							+ String.valueOf(i) + ayaNumEnd,
-							doc.getStyle("AyaNumberingStyle"));
-					doc.setCharacterAttributes(_offset, doc.getLength()
-							- offset, doc.getStyle("AyaNumberingStyle"), false);
+					
+					txt = txt + ayaNumStart
+							+ getArabicAyaNumbering(i) + ayaNumEnd;
 				}
-
-				doc.insertString(doc.getLength(), "\n",
+				
+				doc.insertString(offset, txt + "\n",
 						doc.getStyle("BismillahStyle"));
 
 				doc.setParagraphAttributes(offset, doc.getLength() - offset,
@@ -576,17 +575,9 @@ public class Main extends JFrame {
 			}
 
 			// add actual Aya text
-			doc.insertString(doc.getLength(), ayaText, base);
+			doc.insertString(doc.getLength(), ayaText + ayaNumStart
+					+ getArabicAyaNumbering(i) + ayaNumEnd + " ", base);
 
-			// add aya number
-			int offset = doc.getLength();
-			char ayaNumStart = '\ufd3f';
-			char ayaNumEnd = '\ufd3e';
-			doc.insertString(offset, ayaNumStart
-					+ String.valueOf(i) + ayaNumEnd,
-					doc.getStyle("AyaNumberingStyle"));
-			doc.setCharacterAttributes(offset, doc.getLength() - offset,
-					doc.getStyle("AyaNumberingStyle"), false);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -615,18 +606,12 @@ public class Main extends JFrame {
 				StyleContext.DEFAULT_STYLE);
 		StyleConstants.setFontFamily(base, Constants.me_quran_FontFamily);
 		StyleConstants.setFontSize(base, 24);
-
-		// style for aya numbering. We wish to use different font than aya text
-		// here
-		Style ayaNumberingStyle = doc.addStyle("AyaNumberingStyle", base);
-		StyleConstants.setFontFamily(ayaNumberingStyle,
-				Constants.KFGQPC_fontFamily);
-		StyleConstants.setFontSize(ayaNumberingStyle, 18);
+		StyleConstants.setAlignment(base, StyleConstants.ALIGN_JUSTIFIED);
 
 		// style for Bismillah
 		Style bismillahStyle = doc.addStyle("BismillahStyle", base);
 		StyleConstants.setBold(bismillahStyle, true);
-		StyleConstants.setSpaceBelow(bismillahStyle, 10f);
+		//StyleConstants.setSpaceBelow(bismillahStyle, 10f);
 		StyleConstants
 				.setAlignment(bismillahStyle, StyleConstants.ALIGN_CENTER);
 
@@ -672,10 +657,12 @@ public class Main extends JFrame {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Main m = new Main();
-				m.pack();
+				m.setSize(1024, 768);
 				m.setVisible(true);
+				//Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				//m.setLocation(dim.width/2-m.getSize().width/2, dim.height/2-m.getSize().height/2);
+				m.setLocationRelativeTo(null);
 			}
 		});
 	}
-
 }
