@@ -114,7 +114,6 @@ public class Loader {
 	}
 	
 	private Quran loadQuranTranslationFromXML(QuranTranslationID transID) {
-		System.out.println("Loading translation: " + transID.getResourcePath());
 		XStream xstream = new XStream(new StaxDriver());
 		xstream.processAnnotations(Quran.class);
 		xstream.autodetectAnnotations(true);

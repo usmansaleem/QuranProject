@@ -24,4 +24,5 @@ public interface Constants {
 	public static final String UrduTranslation = "ترجمہ";
 	public static final String MenuUrduTranslationColumn1 = "کالم اول";
 	public static final String MenuUrduTranslationColumn2 = "کالم دوئم";
+	public static final String UrduTranslationBy = "ترجمہ  از"; 
 }
