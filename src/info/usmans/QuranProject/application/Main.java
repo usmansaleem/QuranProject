@@ -95,6 +95,7 @@ public class Main extends JFrame {
 	private JSpinner spinnerSoorah;
 	private JLabel lblTranslationCol1;
 	private JLabel lblTranslationCol2;
+	private JMenuItem mntmQuranProject;
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -111,7 +112,7 @@ public class Main extends JFrame {
 
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
-		splitPane.setResizeWeight(0.65);
+		splitPane.setResizeWeight(0.6);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout
 				.setHorizontalGroup(groupLayout
@@ -411,6 +412,19 @@ public class Main extends JFrame {
 		mnInformation
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
+		
+		mntmQuranProject = new JMenuItem("");
+		mntmQuranProject.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InformationDialog dialog = new InformationDialog(Main.this, true);
+				dialog.setLocationRelativeTo(Main.this);
+				dialog.setVisible(true);
+			}
+		});
+		mntmQuranProject.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mntmQuranProject.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mntmQuranProject.setText(Constants.UrduQuranProject);
+		mnInformation.add(mntmQuranProject);
 
 		initializeSubMenus();
 

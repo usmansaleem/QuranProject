@@ -30,5 +30,6 @@ public interface Constants {
 	public static final String UrduEraofSurah= "زمانہ ٴنزول";
 	public static final String UrduMedni = "مدنی";
 	public static final String UrduMekki = "مکی";
+	public static final String UrduQuranProject = "قرآن پروجیکٹ";
 	
 }
