@@ -25,4 +25,10 @@ public interface Constants {
 	public static final String MenuUrduTranslationColumn1 = "کالم اول";
 	public static final String MenuUrduTranslationColumn2 = "کالم دوئم";
 	public static final String UrduTranslationBy = "ترجمہ  از"; 
+	public static final String UrduAyatCount = "آیات کی تعداد";
+	public static final String UrduRukuCount = "رکوع کی تعداد";
+	public static final String UrduEraofSurah= "زمانہ ٴنزول";
+	public static final String UrduMedni = "مدنی";
+	public static final String UrduMekki = "مکی";
+	
 }

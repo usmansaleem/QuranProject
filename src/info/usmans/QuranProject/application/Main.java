@@ -636,8 +636,8 @@ public class Main extends JFrame {
 	private void loadPage(int col, int pageNum) {
 		DefaultStyledDocument doc = initDocStyles(col);
 		StringBuilder suraLabelText = new StringBuilder();
-		StringBuilder suraInformationText = new StringBuilder();
-		suraInformationText.append("<html>");
+		StringBuilder suraTooltipText = new StringBuilder();
+		suraTooltipText.append("<html>");
 
 		if (pageNum <= 0 || pageNum > totalPages) {
 			throw new IllegalArgumentException("Invalid Page Number ["
@@ -668,17 +668,7 @@ public class Main extends JFrame {
 
 			suraLabelText.append(Constants.ArabicSoorah).append(" ")
 					.append(currentPageSura.getName());
-			// TODO: Use Urdu text
-			suraInformationText.append("<div dir=rtl align=center>")
-					.append(suraData.getName()).append("</div><br>");
-			suraInformationText.append("Number of Aya: ")
-					.append(suraData.getAyas()).append("<br>");
-			suraInformationText.append("Number of Rukus: ")
-					.append(suraData.getRukus()).append("<br>");
-			suraInformationText.append("Type: ").append(suraData.getType())
-					.append("<br>");
-			suraInformationText.append("Revealing Order: "
-					+ suraData.getOrder());
+			suraTooltipText.append(getSurahTooltipText(suraData));
 
 		} else if (pageNum < totalPages) {
 			// logic for all other pages, except last page
@@ -691,17 +681,8 @@ public class Main extends JFrame {
 			if (currentPageStartSura == nextPageStartSura) {
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>")
-						.append(suraData.getName()).append("</div><br>");
-				suraInformationText.append("Number of Aya: ")
-						.append(suraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ")
-						.append(suraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ").append(suraData.getType())
-						.append("<br>");
-				suraInformationText.append(
-						"Revealing Order: " + suraData.getOrder()).append(
-						"<hr>");
+				suraTooltipText.append(getSurahTooltipText(suraData));
+
 				for (int ayaNumber = currentPageStartAya; ayaNumber < nextPageStartAya; ayaNumber++) {
 					updateAyaText(col, doc, currentPageSura, ayaNumber);
 				}
@@ -716,17 +697,7 @@ public class Main extends JFrame {
 				}
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>")
-						.append(suraData.getName()).append("</div><br>");
-				suraInformationText.append("Number of Aya: ")
-						.append(suraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ")
-						.append(suraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ").append(suraData.getType())
-						.append("<br>");
-				suraInformationText.append(
-						"Revealing Order: " + suraData.getOrder()).append(
-						"<hr>");
+				suraTooltipText.append(getSurahTooltipText(suraData));
 
 				// add other suras on current page (if required)
 				for (int suraNumber = currentPageStartSura + 1; suraNumber < nextPageStartSura; suraNumber++) {
@@ -737,18 +708,7 @@ public class Main extends JFrame {
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(otherSura.getName());
-					suraInformationText.append("<div dir=rtl align=center>")
-							.append(otherSuraData.getName())
-							.append("</div><br>");
-					suraInformationText.append("Number of Aya: ")
-							.append(otherSuraData.getAyas()).append("<br>");
-					suraInformationText.append("Number of Rukus: ")
-							.append(otherSuraData.getRukus()).append("<br>");
-					suraInformationText.append("Type: ")
-							.append(otherSuraData.getType()).append("<br>");
-					suraInformationText.append(
-							"Revealing Order: " + otherSuraData.getOrder())
-							.append("<hr>");
+					suraTooltipText.append(getSurahTooltipText(otherSuraData));
 
 					for (int ayaNumber = 1; ayaNumber <= otherSura.getAyaMap()
 							.size(); ayaNumber++) {
@@ -769,18 +729,8 @@ public class Main extends JFrame {
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(nextPageSura.getName());
-					suraInformationText.append("<div dir=rtl align=center>")
-							.append(nextPageSuraData.getName())
-							.append("</div><br>");
-					suraInformationText.append("Number of Aya: ")
-							.append(nextPageSuraData.getAyas()).append("<br>");
-					suraInformationText.append("Number of Rukus: ")
-							.append(nextPageSuraData.getRukus()).append("<br>");
-					suraInformationText.append("Type: ")
-							.append(nextPageSuraData.getType()).append("<br>");
-					suraInformationText.append(
-							"Revealing Order: " + nextPageSuraData.getOrder())
-							.append("<hr>");
+					suraTooltipText
+							.append(getSurahTooltipText(nextPageSuraData));
 
 					for (int ayaNumber = 1; ayaNumber < nextPageStartAya; ayaNumber++) {
 						if (ayaNumber == 1) {
@@ -801,18 +751,7 @@ public class Main extends JFrame {
 						.get(i - 1);
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(lastPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>")
-						.append(lastPageSuraData.getName())
-						.append("</div><br>");
-				suraInformationText.append("Number of Aya: ")
-						.append(lastPageSuraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ")
-						.append(lastPageSuraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ")
-						.append(lastPageSuraData.getType()).append("<br>");
-				suraInformationText.append(
-						"Revealing Order: " + lastPageSuraData.getOrder())
-						.append("<hr>");
+				suraTooltipText.append(getSurahTooltipText(lastPageSuraData));
 				if (i != 114) {
 					suraLabelText.append(Constants.ArabicComma);
 				}
@@ -831,8 +770,8 @@ public class Main extends JFrame {
 			this.txtpnData.setDocument(doc);
 			this.txtpnData.setCaretPosition(0);
 			this.lblSuraName.setText(suraLabelText.toString());
-			suraInformationText.append("</html>");
-			this.lblSuraName.setToolTipText(suraInformationText.toString());
+			suraTooltipText.append("</html>");
+			this.lblSuraName.setToolTipText(suraTooltipText.toString());
 		} else if (col == 1) {
 			this.textPaneTrans1.setDocument(doc);
 			this.textPaneTrans1.setCaretPosition(0);
@@ -977,6 +916,29 @@ public class Main extends JFrame {
 
 	private int getPageOfChapter(int chapter) {
 		return startPagesofChapters[chapter - 1];
+	}
+
+	private String getSurahTooltipText(SuraData data) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div dir=rtl align=center><font face='")
+				.append(Constants.KFGQPC_fontFamily).append("'>")
+				.append(Constants.UrduSoorah).append(' ').append(data.getName())
+				.append("</font></div>");
+		sb.append("<div dir=rtl align=right><font face='")
+				.append(Constants.KFGQPC_fontFamily).append("'>");
+		sb.append(Constants.UrduAyatCount).append(" - ").append(data.getAyas())
+				.append("<br>");
+		sb.append(Constants.UrduRukuCount).append(" - ").append(data.getRukus())
+				.append("<br>");
+		sb.append(Constants.UrduEraofSurah).append(" - ");
+		if (data.getType().equals("Meccan")) {
+			sb.append(Constants.UrduMekki);
+		} else {
+			sb.append(Constants.UrduMedni);
+		}
+		sb.append("</font></div><br>");
+		sb.append("<hr>");
+		return sb.toString();
 	}
 
 	public static void main(String a[]) {
