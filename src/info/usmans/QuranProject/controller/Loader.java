@@ -21,169 +21,197 @@ import info.usmans.QuranProject.model.QuranData;
  */
 public class Loader {
 	private QuranData quranData;
-	private Font me_quran_font;
-	private Font hussaini_nastaleeq_font;
-	private Font KFGQPC_font;
-	private Quran quranText[] = new Quran[3];
-	private EnumMap<QuranTranslationID, Quran> quranTranslationMap = new EnumMap<>(QuranTranslationID.class);
-	
+
+	private EnumMap<QuranTextType, Quran> quranTextMap = new EnumMap<QuranTextType, Quran>(
+			QuranTextType.class);
+	private EnumMap<QuranTranslationID, Quran> quranTranslationMap = new EnumMap<QuranTranslationID, Quran>(
+			QuranTranslationID.class);
+	private EnumMap<QuranicFonts, Font> quranicFonts = new EnumMap<QuranicFonts, Font>(
+			QuranicFonts.class);
+
+	private static final String quran_data_xml_path = "../resources/qurantext/quran-data.xml";
 
 	/**
-	 * tanween to be used by me_quran font.
+	 * Singleten instance
 	 */
-	private static final String quran_uthmani_different_tanween_xml_path = "../resources/qurantext/quran-uthmani-different-tanween.xml";
-	private static final String quran_uthmani_standard_xml_path = "../resources/qurantext/quran-uthmani.xml";
-	private static final String quran_simple_enhanced_xml_path = "../resources/qurantext/quran-simple-enhanced.xml";
-	private static final String quran_data_xml_path = "../resources/qurantext/quran-data.xml";
-	private static final String me_quran_font_path = "../resources/fonts/me_quran_volt_newmet.ttf";
-	private static final String hussaini_nastaleeq_font_path = "../resources/fonts/hussaini-nastaleeq.ttf";
-	private static final String KFGQPC_font_path = "../resources/fonts/UthmanTN1Ver10.otf";
-
 	private static Loader loader = new Loader();
 
+	/**
+	 * Private constructor. Use getInstance to get the instance of this class
+	 * 
+	 * The constructor pre-initializes Quran Meta Data and Quranic Fonts. Quran
+	 * text and Quran translations are lazy loaded
+	 */
 	private Loader() {
 		loadQuranData();
 		loadQuranFonts();
 	}
 
+	/**
+	 * Singelton getInstance
+	 * 
+	 * @return Loader singleton reference
+	 */
 	public static Loader getInstance() {
 		return loader;
 	}
 
+	/**
+	 * Returns Quran Meta Data
+	 * 
+	 * @return QuranData representing Quran Meta data
+	 */
 	public QuranData getQuranData() {
 		return this.quranData;
 	}
 
-	public Font getMeQuranFont() {
-		return this.me_quran_font;
+	/**
+	 * Although we register the fonts so they should be available by their
+	 * family name, exposing following method if a direct reference of Font is
+	 * require.
+	 * 
+	 * @return Font
+	 */
+	public Font getQuranicFont(QuranicFonts qf) {
+		return this.quranicFonts.get(qf);
 	}
 
-	public Font getHussainiNastaleeqFont() {
-		return this.hussaini_nastaleeq_font;
-	}
-
-	public Font getKFGQPCHafsFont() {
-		return this.KFGQPC_font;
-	}
-
+	/**
+	 * Lazy-load Quran text.
+	 * 
+	 * @param type
+	 *            QuranTextType
+	 * @return Quran representing Quran text
+	 */
 	public Quran getQuranText(QuranTextType type) {
-
-		switch (type) {
-		case USMANI_SPECIALTANWEEN:
-			if (quranText[0] == null) {
-				quranText[0] = loadQuranTextFromXML(quran_uthmani_different_tanween_xml_path);
-
+		Quran _quran = this.quranTextMap.get(type);
+		if (_quran == null) {
+			XStream xstream = new XStream(new StaxDriver());
+			xstream.processAnnotations(Quran.class);
+			xstream.autodetectAnnotations(true);
+			InputStream is = null;
+			is = Loader.class.getResourceAsStream(type.getResourcePath());
+			if (is == null) {
+				System.err
+						.println("Unable to acquire InputStream for Quran Text: "
+								+ type.getResourcePath());
+				return null;
 			}
-			return quranText[0];
-		case USMANI_STANDARD:
-			if (quranText[1] == null) {
-				quranText[1] = loadQuranTextFromXML(quran_uthmani_standard_xml_path);
+			_quran = (Quran) xstream.fromXML(is);
+			this.quranTextMap.put(type, _quran);
+			try {
+				is.close();
+			} catch (IOException e) {
+				System.err
+						.println("Unable to close InputStream for Quran Text: "
+								+ e.getMessage());
 			}
-			return quranText[1];
-		case SIMPLE:
-			if (quranText[2] == null) {
-				quranText[2] = loadQuranTextFromXML(quran_simple_enhanced_xml_path);
-			}
-			return quranText[2];
 		}
-		return null;
+
+		return _quran;
 	}
-	
+
+	/**
+	 * Load Quran Translation text and add it to local Map for faster retrieval
+	 * later on.
+	 * 
+	 * @param translationID
+	 *            QuranTranslationID for which translation is required
+	 * @return Quran containing translation
+	 */
 	public Quran getQuranTranslation(QuranTranslationID translationID) {
-		Quran _quranTranslation = quranTranslationMap.get(translationID);
-		if(_quranTranslation == null) {
-			_quranTranslation = loadQuranTranslationFromXML(translationID);
-			quranTranslationMap.put(translationID, _quranTranslation);
+		Quran _quran = quranTranslationMap.get(translationID);
+		if (_quran == null) {
+			XStream xstream = new XStream(new StaxDriver());
+			xstream.processAnnotations(Quran.class);
+			xstream.autodetectAnnotations(true);
+			InputStream is = null;
+			is = Loader.class.getResourceAsStream(translationID
+					.getResourcePath());
+			if (is == null) {
+				System.err
+						.println("Unable to acquire InputStream for Quran Translation: "
+								+ translationID.getResourcePath());
+				return null;
+			}
+			_quran = (Quran) xstream.fromXML(is);
+			quranTranslationMap.put(translationID, _quran);
+			try {
+				is.close();
+			} catch (IOException e) {
+				System.err
+						.println("Unable to close InputStream for Quran Translation: "
+								+ e.getMessage());
+			}
 		}
-		
-		return _quranTranslation;
+
+		return _quran;
 	}
 
-	private Quran loadQuranTextFromXML(String path) {
-		XStream xstream = new XStream(new StaxDriver());
-		xstream.processAnnotations(Quran.class);
-		xstream.autodetectAnnotations(true);
-
-		try (InputStream is = Loader.class.getResourceAsStream(path)) {
-			return (Quran) xstream.fromXML(is);
-
-		} catch (IOException ioe) {
-			System.err.println("Error loading Quran text: " + ioe.getMessage());
-		}
-		return null;
-	}
-	
-	private Quran loadQuranTranslationFromXML(QuranTranslationID transID) {
-		XStream xstream = new XStream(new StaxDriver());
-		xstream.processAnnotations(Quran.class);
-		xstream.autodetectAnnotations(true);
-
-		try (InputStream is = Loader.class.getResourceAsStream(transID.getResourcePath())) {
-			return (Quran) xstream.fromXML(is);
-
-		} catch (IOException ioe) {
-			System.err.println("Error loading Quran translation: " + ioe.getMessage());
-		}
-		return null;
-	}
-
+	/**
+	 * Load Quran Meta Data
+	 */
 	private void loadQuranData() {
 		XStream xstream = new XStream(new StaxDriver());
 		xstream.processAnnotations(QuranData.class);
 		xstream.autodetectAnnotations(true);
-		QuranData _quranData = null;
-		try (InputStream is = Loader.class
-				.getResourceAsStream(quran_data_xml_path)) {
-			_quranData = (QuranData) xstream.fromXML(is);
-
-		} catch (IOException ioe) {
-			System.err.println("Error loading Quran Data: " + ioe.getMessage());
+		InputStream is = null;
+		is = Loader.class.getResourceAsStream(quran_data_xml_path);
+		if (is != null) {
+			this.quranData = (QuranData) xstream.fromXML(is);
+			try {
+				is.close();
+			} catch (IOException e) {
+				System.err
+						.println("Unable to close InputStream for Quran Data resource: "
+								+ e.getMessage());
+			}
+		} else {
+			System.err
+					.println("Unable to acquire InputStream for Quran Data resource: "
+							+ quran_data_xml_path);
 		}
-		assert _quranData != null;
-		this.quranData = _quranData;
 	}
 
 	/**
-	 * Loads me_quran font
+	 * Loads Quranic fonts that we are bundeling
 	 * 
-	 * @return
 	 */
 	private void loadQuranFonts() {
-		Font f = null;
-		try (InputStream is = Loader.class
-				.getResourceAsStream(me_quran_font_path)) {
-			f = Font.createFont(Font.TRUETYPE_FONT, is);
-			this.me_quran_font = f.deriveFont(24f); // have to specify float
-			// also register font with system
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
-		} catch (IOException | FontFormatException e) {
-			System.err.println("Error loading and creating custom font: "
-					+ e.getMessage());
-		}
 
-		try (InputStream is = Loader.class
-				.getResourceAsStream(hussaini_nastaleeq_font_path)) {
-			f = Font.createFont(Font.TRUETYPE_FONT, is);
-			this.hussaini_nastaleeq_font = f.deriveFont(14f); // have to specify
-																// float
-			// also register font with system
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
-		} catch (IOException | FontFormatException e) {
-			System.err.println("Error loading and creating custom font: "
-					+ e.getMessage());
-		}
+		for (QuranicFonts qf : QuranicFonts.values()) {
+			InputStream is = null;
+			is = Loader.class.getResourceAsStream(qf.getResourcePath());
+			if (is != null) {
+				Font f = null;
+				try {
+					f = Font.createFont(Font.TRUETYPE_FONT, is);
+				} catch (FontFormatException e) {
+					System.out
+							.println("Error Creating Font: " + e.getMessage());
+				} catch (IOException e) {
+					System.out
+							.println("Error Creating Font: " + e.getMessage());
+				}
+				if (f != null) {
+					this.quranicFonts
+							.put(qf, f.deriveFont(qf.getDefaultSize()));
+					GraphicsEnvironment.getLocalGraphicsEnvironment()
+							.registerFont(f);
+				}
 
-		try (InputStream is = Loader.class
-				.getResourceAsStream(KFGQPC_font_path)) {
-			f = Font.createFont(Font.TRUETYPE_FONT, is);
-			this.KFGQPC_font = f.deriveFont(18f); // have to specify
-													// float
-			// also register font with system
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
-		} catch (IOException | FontFormatException e) {
-			System.err.println("Error loading and creating custom font: "
-					+ e.getMessage());
+				try {
+					is.close();
+				} catch (IOException e) {
+					System.err
+							.println("Error closing InputStream for font resources: "
+									+ e.getMessage());
+				}
+			} else {
+				System.err
+						.println("Unable to acquire InputStream for font resource: "
+								+ qf.getResourcePath());
+			}
 		}
-
 	}
 }

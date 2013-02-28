@@ -29,7 +29,7 @@ public class Quran {
 	public Map<Integer, Sura> getSuraMap() {
 		// lazy initialize hashtable for quick access of sura
 		if (suraMap == null) {
-			suraMap = new TreeMap<>();
+			suraMap = new TreeMap<Integer, Sura>();
 			for (Sura _sura : this.sura) {
 				suraMap.put(_sura.getIndex(), _sura);
 			}

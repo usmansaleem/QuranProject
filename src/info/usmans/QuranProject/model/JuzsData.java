@@ -43,7 +43,7 @@ public class JuzsData {
 
 	public Map<Integer, JuzData> getJuzMap() {
 		if (juzMap == null) {
-			juzMap = new TreeMap<>();
+			juzMap = new TreeMap<Integer, JuzData>();
 			for (JuzData _juz : juz) {
 				juzMap.put(_juz.getIndex(), _juz);
 			}
@@ -61,7 +61,7 @@ public class JuzsData {
 	 */
 	public Map<String, JuzData> getSuraAyaJuzMap() {
 		if (suraAyaJuzMap == null) {
-			suraAyaJuzMap = new TreeMap<>();
+			suraAyaJuzMap = new TreeMap<String, JuzData>();
 			for (JuzData _juz : juz) {
 				suraAyaJuzMap.put(
 						String.valueOf(_juz.getSura())

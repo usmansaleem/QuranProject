@@ -41,7 +41,7 @@ public class ManzilsData {
 
 	public Map<Integer, ManzilData> getManzilMap() {
 		if (manzilMap == null) {
-			manzilMap = new TreeMap<>();
+			manzilMap = new TreeMap<Integer, ManzilData>();
 			for (ManzilData _manzil : manzil) {
 				manzilMap.put(_manzil.getIndex(), _manzil);
 			}

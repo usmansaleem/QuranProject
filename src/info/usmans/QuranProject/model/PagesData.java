@@ -37,7 +37,7 @@ public class PagesData {
 
 	public Map<Integer, PageData> getPageMap() {
 		if (pageMap == null) {
-			pageMap = new TreeMap<>();
+			pageMap = new TreeMap<Integer, PageData>();
 			for (PageData _page : page) {
 				pageMap.put(_page.getIndex(), _page);
 			}
@@ -52,7 +52,7 @@ public class PagesData {
 	 */
 	public Map<String, PageData> getSuraAyaPageMap() {
 		if (suraAyaPageMap == null) {
-			suraAyaPageMap = new HashMap<>();
+			suraAyaPageMap = new HashMap<String, PageData>();
 			for (PageData _page : page) {
 				suraAyaPageMap.put(String.valueOf(_page.getSura())+String.valueOf(_page.getAya()), _page);
 			}

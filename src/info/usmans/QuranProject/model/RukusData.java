@@ -41,7 +41,7 @@ public class RukusData {
 
 	public Map<Integer, RukuData> getRukuMap() {
 		if (rukuMap == null) {
-			rukuMap = new TreeMap<>();
+			rukuMap = new TreeMap<Integer, RukuData>();
 			for (RukuData _ruku : ruku) {
 				rukuMap.put(_ruku.getIndex(), _ruku);
 			}

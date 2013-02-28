@@ -44,7 +44,7 @@ public class SurasData {
 
 	public Map<Integer, SuraData> getSuraMap() {
 		if (suraMap == null) {
-			suraMap = new TreeMap<>();
+			suraMap = new TreeMap<Integer, SuraData>();
 			for (SuraData _sura : this.sura) {
 				suraMap.put(_sura.getIndex(), _sura);
 			}

@@ -36,7 +36,7 @@ public class Sura {
 	public Map<Integer, Aya> getAyaMap() {
 		// lazy initialization of hashtable for quick access of ayas
 		if (ayaMap == null) {
-			ayaMap = new TreeMap<>();
+			ayaMap = new TreeMap<Integer, Aya>();
 			for (Aya _aya : this.aya) {
 				ayaMap.put(_aya.getIndex(), _aya);
 			}

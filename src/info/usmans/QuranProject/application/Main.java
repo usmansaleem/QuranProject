@@ -3,6 +3,7 @@ package info.usmans.QuranProject.application;
 import info.usmans.QuranProject.controller.Loader;
 import info.usmans.QuranProject.controller.QuranTextType;
 import info.usmans.QuranProject.controller.QuranTranslationID;
+import info.usmans.QuranProject.controller.QuranicFonts;
 import info.usmans.QuranProject.model.Aya;
 import info.usmans.QuranProject.model.JuzData;
 import info.usmans.QuranProject.model.PageData;
@@ -187,7 +188,7 @@ public class Main extends JFrame {
 		col1Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setRightComponent(col1Panel);
 		col1Panel.setLayout(new BorderLayout(0, 0));
-		
+
 		scrollPane_Trans1 = new JScrollPane();
 		scrollPane_Trans1
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -198,45 +199,50 @@ public class Main extends JFrame {
 		textPaneTrans1
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans1.setViewportView(textPaneTrans1);
-		
+
 		lblTranslationCol1 = new JLabel("");
-		lblTranslationCol1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		lblTranslationCol1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblTranslationCol1
+				.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		lblTranslationCol1
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		col1Panel.add(lblTranslationCol1, BorderLayout.NORTH);
 
 		JPanel col2Panel = new JPanel();
 		col2Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setLeftComponent(col2Panel);
 		col2Panel.setLayout(new BorderLayout(0, 0));
-		
+
 		scrollPane_Trans2 = new JScrollPane();
 		scrollPane_Trans2
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		col2Panel.add(scrollPane_Trans2);
-		
-		
 
 		textPaneTrans2 = new JTextPane();
 		textPaneTrans2.setEditable(false);
 		textPaneTrans2
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans2.setViewportView(textPaneTrans2);
-		
+
 		lblTranslationCol2 = new JLabel("");
-		lblTranslationCol2.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		lblTranslationCol2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblTranslationCol2
+				.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		lblTranslationCol2
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		col2Panel.add(lblTranslationCol2, BorderLayout.NORTH);
 
 		lblSuraName = new JLabel("");
 		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSuraName.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
+		lblSuraName
+				.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
 		topPanel.add(lblSuraName, BorderLayout.CENTER);
 
 		lblChapterNumber = new JLabel("");
-		lblChapterNumber.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblChapterNumber
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		lblChapterNumber.setHorizontalAlignment(SwingConstants.CENTER);
-		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
+		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
+				Font.BOLD, 16));
 		topPanel.add(lblChapterNumber, BorderLayout.EAST);
 
 		bottomPanel.setLayout(new GridLayout(0, 4, 0, 0));
@@ -278,7 +284,8 @@ public class Main extends JFrame {
 		pageSpinnerPanel.add(lblOf);
 		lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblOf.setFont(Loader.getInstance().getHussainiNastaleeqFont());
+		lblOf.setFont(Loader.getInstance().getQuranicFont(
+				QuranicFonts.FONT_HUSSAINI_NASTALEEQ));
 
 		sorrahSpinnerPanel = new JPanel();
 		sorrahSpinnerPanel
@@ -300,11 +307,10 @@ public class Main extends JFrame {
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		spinnerSoorah.addChangeListener(new ChangeListener() {
 
-			@Override
 			public void stateChanged(ChangeEvent e) {
-				Integer surah = (Integer)spinnerSoorah.getValue();
-				spinnerPage.setValue(quranData.getSuras().getSuraList().get(surah-1)
-						.getPage());
+				Integer surah = (Integer) spinnerSoorah.getValue();
+				spinnerPage.setValue(quranData.getSuras().getSuraList()
+						.get(surah - 1).getPage());
 
 			}
 		});
@@ -329,7 +335,8 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.USMANI_SPECIALTANWEEN);
-				Main.this.loadPage(0, (Integer) spinnerPage.getModel().getValue());
+				Main.this.loadPage(0, (Integer) spinnerPage.getModel()
+						.getValue());
 
 			}
 		});
@@ -347,7 +354,8 @@ public class Main extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.SIMPLE);
-				Main.this.loadPage(0, (Integer) spinnerPage.getModel().getValue());
+				Main.this.loadPage(0, (Integer) spinnerPage.getModel()
+						.getValue());
 			}
 		});
 		rdbtnmntmSimpleText.setFont(new Font(
@@ -424,13 +432,14 @@ public class Main extends JFrame {
 				QuranTranslationID.UR_MAUDUDI);
 		quranText[2] = Loader.getInstance().getQuranTranslation(
 				QuranTranslationID.UR_AHMED_RAZA_KHAN);
-		
-		//update default display of translation author labels
-		lblTranslationCol1.setText(Constants.UrduTranslationBy + " " + QuranTranslationID.UR_MAUDUDI.toString());
-		lblTranslationCol2.setText(Constants.UrduTranslationBy + " " + QuranTranslationID.UR_AHMED_RAZA_KHAN.toString());
+
+		// update default display of translation author labels
+		lblTranslationCol1.setText(Constants.UrduTranslationBy + " "
+				+ QuranTranslationID.UR_MAUDUDI.toString());
+		lblTranslationCol2.setText(Constants.UrduTranslationBy + " "
+				+ QuranTranslationID.UR_AHMED_RAZA_KHAN.toString());
 
 	}
-	
 
 	private void initializeSubMenus() {
 		SurahMenuItemActionListener surahMenuActionListener = new SurahMenuItemActionListener();
@@ -517,12 +526,12 @@ public class Main extends JFrame {
 
 	/**
 	 * ActionListener for column1 translation
+	 * 
 	 * @author usman
-	 *
+	 * 
 	 */
 	private class TranslationCol1 implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			String transValue = e.getActionCommand();
 			QuranTranslationID translation = QuranTranslationID
@@ -530,7 +539,8 @@ public class Main extends JFrame {
 			quranText[1] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(1, ((Integer) spinnerPage.getValue()).intValue());
-			lblTranslationCol1.setText(Constants.UrduTranslationBy + " " + translation.toString());
+			lblTranslationCol1.setText(Constants.UrduTranslationBy + " "
+					+ translation.toString());
 
 		}
 
@@ -538,12 +548,12 @@ public class Main extends JFrame {
 
 	/**
 	 * ActionListener for column2 translation
+	 * 
 	 * @author usman
-	 *
+	 * 
 	 */
 	private class TranslationCol2 implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			String transValue = e.getActionCommand();
 			QuranTranslationID translation = QuranTranslationID
@@ -551,13 +561,13 @@ public class Main extends JFrame {
 			quranText[2] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(2, ((Integer) spinnerPage.getValue()).intValue());
-			lblTranslationCol2.setText(Constants.UrduTranslationBy + " " + translation.toString());
+			lblTranslationCol2.setText(Constants.UrduTranslationBy + " "
+					+ translation.toString());
 		}
 	}
 
 	private class ChapterMenuItemActionListener implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
 				int chapter = Integer.parseInt(e.getActionCommand());
@@ -574,7 +584,6 @@ public class Main extends JFrame {
 
 	private class SurahMenuItemActionListener implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
 				spinnerSoorah.setValue(new Integer(e.getActionCommand()));
@@ -641,11 +650,12 @@ public class Main extends JFrame {
 		int currentPageStartAya = page.getAya();
 		Sura currentPageSura = quranText[col].getSuraMap().get(
 				currentPageStartSura);
-		SuraData suraData = quranData.getSuras().getSuraList().get(currentPageStartSura-1);
+		SuraData suraData = quranData.getSuras().getSuraList()
+				.get(currentPageStartSura - 1);
 
 		// which chapter number belong to this page?
-		this.lblChapterNumber.setText(Constants.UrduChapter + " " + String.valueOf(getChapterOfPage(page
-				.getIndex())));
+		this.lblChapterNumber.setText(Constants.UrduChapter + " "
+				+ String.valueOf(getChapterOfPage(page.getIndex())));
 
 		// special handling for page 1 - Surah Fatiha
 		if (pageNum == 1) {
@@ -658,12 +668,17 @@ public class Main extends JFrame {
 
 			suraLabelText.append(Constants.ArabicSoorah).append(" ")
 					.append(currentPageSura.getName());
-			//TODO: Use Urdu text
-			suraInformationText.append("<div dir=rtl align=center>").append(suraData.getName()).append("</div><br>");
-			suraInformationText.append("Number of Aya: ").append(suraData.getAyas()).append("<br>");
-			suraInformationText.append("Number of Rukus: ").append(suraData.getRukus()).append("<br>");
-			suraInformationText.append("Type: ").append(suraData.getType()).append("<br>");
-			suraInformationText.append("Revealing Order: " + suraData.getOrder());
+			// TODO: Use Urdu text
+			suraInformationText.append("<div dir=rtl align=center>")
+					.append(suraData.getName()).append("</div><br>");
+			suraInformationText.append("Number of Aya: ")
+					.append(suraData.getAyas()).append("<br>");
+			suraInformationText.append("Number of Rukus: ")
+					.append(suraData.getRukus()).append("<br>");
+			suraInformationText.append("Type: ").append(suraData.getType())
+					.append("<br>");
+			suraInformationText.append("Revealing Order: "
+					+ suraData.getOrder());
 
 		} else if (pageNum < totalPages) {
 			// logic for all other pages, except last page
@@ -676,11 +691,17 @@ public class Main extends JFrame {
 			if (currentPageStartSura == nextPageStartSura) {
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>").append(suraData.getName()).append("</div><br>");
-				suraInformationText.append("Number of Aya: ").append(suraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ").append(suraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ").append(suraData.getType()).append("<br>");
-				suraInformationText.append("Revealing Order: " + suraData.getOrder()).append("<hr>");
+				suraInformationText.append("<div dir=rtl align=center>")
+						.append(suraData.getName()).append("</div><br>");
+				suraInformationText.append("Number of Aya: ")
+						.append(suraData.getAyas()).append("<br>");
+				suraInformationText.append("Number of Rukus: ")
+						.append(suraData.getRukus()).append("<br>");
+				suraInformationText.append("Type: ").append(suraData.getType())
+						.append("<br>");
+				suraInformationText.append(
+						"Revealing Order: " + suraData.getOrder()).append(
+						"<hr>");
 				for (int ayaNumber = currentPageStartAya; ayaNumber < nextPageStartAya; ayaNumber++) {
 					updateAyaText(col, doc, currentPageSura, ayaNumber);
 				}
@@ -695,27 +716,40 @@ public class Main extends JFrame {
 				}
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(currentPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>").append(suraData.getName()).append("</div><br>");
-				suraInformationText.append("Number of Aya: ").append(suraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ").append(suraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ").append(suraData.getType()).append("<br>");
-				suraInformationText.append("Revealing Order: " + suraData.getOrder()).append("<hr>");
-				
+				suraInformationText.append("<div dir=rtl align=center>")
+						.append(suraData.getName()).append("</div><br>");
+				suraInformationText.append("Number of Aya: ")
+						.append(suraData.getAyas()).append("<br>");
+				suraInformationText.append("Number of Rukus: ")
+						.append(suraData.getRukus()).append("<br>");
+				suraInformationText.append("Type: ").append(suraData.getType())
+						.append("<br>");
+				suraInformationText.append(
+						"Revealing Order: " + suraData.getOrder()).append(
+						"<hr>");
 
 				// add other suras on current page (if required)
 				for (int suraNumber = currentPageStartSura + 1; suraNumber < nextPageStartSura; suraNumber++) {
 					Sura otherSura = quranText[col].getSuraMap()
 							.get(suraNumber);
-					SuraData otherSuraData = quranData.getSuras().getSuraList().get(suraNumber-1);
+					SuraData otherSuraData = quranData.getSuras().getSuraList()
+							.get(suraNumber - 1);
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(otherSura.getName());
-					suraInformationText.append("<div dir=rtl align=center>").append(otherSuraData.getName()).append("</div><br>");
-					suraInformationText.append("Number of Aya: ").append(otherSuraData.getAyas()).append("<br>");
-					suraInformationText.append("Number of Rukus: ").append(otherSuraData.getRukus()).append("<br>");
-					suraInformationText.append("Type: ").append(otherSuraData.getType()).append("<br>");
-					suraInformationText.append("Revealing Order: " + otherSuraData.getOrder()).append("<hr>");
-					
+					suraInformationText.append("<div dir=rtl align=center>")
+							.append(otherSuraData.getName())
+							.append("</div><br>");
+					suraInformationText.append("Number of Aya: ")
+							.append(otherSuraData.getAyas()).append("<br>");
+					suraInformationText.append("Number of Rukus: ")
+							.append(otherSuraData.getRukus()).append("<br>");
+					suraInformationText.append("Type: ")
+							.append(otherSuraData.getType()).append("<br>");
+					suraInformationText.append(
+							"Revealing Order: " + otherSuraData.getOrder())
+							.append("<hr>");
+
 					for (int ayaNumber = 1; ayaNumber <= otherSura.getAyaMap()
 							.size(); ayaNumber++) {
 						if (ayaNumber == 1) {
@@ -730,16 +764,24 @@ public class Main extends JFrame {
 				if (nextPageStartAya > 1) {
 					Sura nextPageSura = quranText[col].getSuraMap().get(
 							nextPageStartSura);
-					SuraData nextPageSuraData = quranData.getSuras().getSuraList().get(nextPageStartSura-1);
+					SuraData nextPageSuraData = quranData.getSuras()
+							.getSuraList().get(nextPageStartSura - 1);
 					suraLabelText.append(Constants.ArabicComma)
 							.append(Constants.ArabicSoorah).append(" ")
 							.append(nextPageSura.getName());
-					suraInformationText.append("<div dir=rtl align=center>").append(nextPageSuraData.getName()).append("</div><br>");
-					suraInformationText.append("Number of Aya: ").append(nextPageSuraData.getAyas()).append("<br>");
-					suraInformationText.append("Number of Rukus: ").append(nextPageSuraData.getRukus()).append("<br>");
-					suraInformationText.append("Type: ").append(nextPageSuraData.getType()).append("<br>");
-					suraInformationText.append("Revealing Order: " + nextPageSuraData.getOrder()).append("<hr>");
-					
+					suraInformationText.append("<div dir=rtl align=center>")
+							.append(nextPageSuraData.getName())
+							.append("</div><br>");
+					suraInformationText.append("Number of Aya: ")
+							.append(nextPageSuraData.getAyas()).append("<br>");
+					suraInformationText.append("Number of Rukus: ")
+							.append(nextPageSuraData.getRukus()).append("<br>");
+					suraInformationText.append("Type: ")
+							.append(nextPageSuraData.getType()).append("<br>");
+					suraInformationText.append(
+							"Revealing Order: " + nextPageSuraData.getOrder())
+							.append("<hr>");
+
 					for (int ayaNumber = 1; ayaNumber < nextPageStartAya; ayaNumber++) {
 						if (ayaNumber == 1) {
 							// start of Bismillah in middle of page
@@ -755,14 +797,22 @@ public class Main extends JFrame {
 			// logic for last page
 			for (int i = currentPageStartSura; i <= 114; i++) {
 				Sura lastPageSura = quranText[col].getSuraMap().get(i);
-				SuraData lastPageSuraData = quranData.getSuras().getSuraList().get(i-1);
+				SuraData lastPageSuraData = quranData.getSuras().getSuraList()
+						.get(i - 1);
 				suraLabelText.append(Constants.ArabicSoorah).append(" ")
 						.append(lastPageSura.getName());
-				suraInformationText.append("<div dir=rtl align=center>").append(lastPageSuraData.getName()).append("</div><br>");
-				suraInformationText.append("Number of Aya: ").append(lastPageSuraData.getAyas()).append("<br>");
-				suraInformationText.append("Number of Rukus: ").append(lastPageSuraData.getRukus()).append("<br>");
-				suraInformationText.append("Type: ").append(lastPageSuraData.getType()).append("<br>");
-				suraInformationText.append("Revealing Order: " + lastPageSuraData.getOrder()).append("<hr>");
+				suraInformationText.append("<div dir=rtl align=center>")
+						.append(lastPageSuraData.getName())
+						.append("</div><br>");
+				suraInformationText.append("Number of Aya: ")
+						.append(lastPageSuraData.getAyas()).append("<br>");
+				suraInformationText.append("Number of Rukus: ")
+						.append(lastPageSuraData.getRukus()).append("<br>");
+				suraInformationText.append("Type: ")
+						.append(lastPageSuraData.getType()).append("<br>");
+				suraInformationText.append(
+						"Revealing Order: " + lastPageSuraData.getOrder())
+						.append("<hr>");
 				if (i != 114) {
 					suraLabelText.append(Constants.ArabicComma);
 				}
@@ -933,8 +983,13 @@ public class Main extends JFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager
 					.getCrossPlatformLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {

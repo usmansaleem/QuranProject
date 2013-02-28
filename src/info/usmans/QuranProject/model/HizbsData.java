@@ -41,7 +41,7 @@ public class HizbsData {
 
 	public Map<Integer, QuarterData> getQuarterMap() {
 		if (quarterMap == null) {
-			quarterMap = new TreeMap<>();
+			quarterMap = new TreeMap<Integer, QuarterData>();
 			for (QuarterData _quarter : quarter) {
 				quarterMap.put(_quarter.getIndex(), _quarter);
 			}

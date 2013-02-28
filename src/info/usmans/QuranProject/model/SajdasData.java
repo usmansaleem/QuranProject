@@ -32,7 +32,7 @@ public class SajdasData {
 
 	public Map<Integer, SajdaData> getSajdaMap() {
 		if (sajdaMap == null) {
-			sajdaMap = new TreeMap<>();
+			sajdaMap = new TreeMap<Integer, SajdaData>();
 			for (SajdaData _sajda : sajda) {
 				sajdaMap.put(_sajda.getIndex(), _sajda);
 			}
