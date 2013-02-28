@@ -1,5 +1,6 @@
-Quran Project 
+**Quran Project**  Version 1.0-beta
 by Usman Saleem (usman@usmans.info)
+
 
 This project is an attempt to create a Java based Quran software with multiple translations loaded side-by-side.
 
@@ -7,14 +8,11 @@ Copyrights (c) 2013 Usman Saleem
 
 License: Creative Commons Attribution-NonCommercial 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc/3.0/.
 
-Terms of Use:
+**Terms of Use**
 - This software cannot be sold commercially. 
 - If you plan to distribute and modify this software, a link back to the author will be appriciated (though not required).
 
-
-
-
-*Resources*
+**Resources**
 - Quran Text
   - The Quran text is downloaded from http://tanzil.net/download/
   - The Quran meta-data is downloaded from http://tanzil.net/wiki/Quran_Metadata
@@ -29,7 +27,7 @@ Terms of Use:
 - Third party libraries
   - XStream is used for XML to Java mapping. Available at: http://xstream.codehaus.org/
 
-*Licenses*
+**Licenses**
 - Tanzil.net Quran Text is used under following license:
 
   Tanzil Quran Text 
@@ -60,7 +58,7 @@ Terms of Use:
   - http://creativecommons.org/licenses/by/3.0/
 
 - me_quran Font is used under following license:
- - Seeking author's permission to bundle and use me_quran font. Their site allows non-commercial usage.
+ - Permission from author to include in this project for non-commercial purposes.
 
 - Hussaini Nastaleeq Font is used under following license:
  - https://github.com/khaledhosny/hussaini-nastaleeq/blob/master/LICENSE
