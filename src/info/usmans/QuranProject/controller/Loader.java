@@ -29,7 +29,7 @@ public class Loader {
 	private EnumMap<QuranicFonts, Font> quranicFonts = new EnumMap<QuranicFonts, Font>(
 			QuranicFonts.class);
 
-	private static final String quran_data_xml_path = "../resources/qurantext/quran-data.xml";
+	private static final String quran_data_xml_path = "/info/usmans/QuranProject/resources/qurantext/quran-data.xml";
 
 	/**
 	 * Singleten instance

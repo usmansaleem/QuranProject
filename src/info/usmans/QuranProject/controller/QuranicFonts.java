@@ -5,7 +5,7 @@ public enum QuranicFonts {
 	FONT_ME_QURAN {
 		@Override
 		public String getResourcePath() {
-			return "../resources/fonts/me_quran_volt_newmet.ttf";
+			return "/info/usmans/QuranProject/resources/fonts/me_quran_volt_newmet.ttf";
 		}
 
 		@Override
@@ -16,7 +16,7 @@ public enum QuranicFonts {
 	FONT_HUSSAINI_NASTALEEQ {
 		@Override
 		public String getResourcePath() {
-			return "../resources/fonts/hussaini-nastaleeq.ttf";
+			return "/info/usmans/QuranProject/resources/fonts/hussaini-nastaleeq.ttf";
 		}
 		
 		@Override
@@ -28,7 +28,7 @@ public enum QuranicFonts {
 	FONT_KFGQPC_TN {
 		@Override
 		public String getResourcePath() {
-			return "../resources/fonts/UthmanTN1Ver10.otf";
+			return "/info/usmans/QuranProject/resources/fonts/UthmanTN1Ver10.otf";
 		}
 		
 		@Override

@@ -74,7 +74,7 @@ public class InformationDialog extends JDialog {
 	
 	private String getReadMeContents() {
 		InputStream is = null;
-		is = Loader.class.getResourceAsStream("../resources/infos/README.md");
+		is = Loader.class.getResourceAsStream("/info/usmans/QuranProject/resources/infos/README.md");
 		if (is == null) {
 			JOptionPane.showMessageDialog(this, "Unable to acquire InputStream for reading README file","null InputStream", JOptionPane.ERROR_MESSAGE);
 			return "";

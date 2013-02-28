@@ -5,14 +5,14 @@ public enum QuranTranslationID {
 	UR_MAUDUDI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.maududi.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.maududi.xml";
 		}
 	},
 	UR_AHMED_RAZA_KHAN {
 
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.kanzuliman.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.kanzuliman.xml";
 		}
 
 	},
@@ -20,14 +20,14 @@ public enum QuranTranslationID {
 
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.jalandhry.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.jalandhry.xml";
 		}
 		
 	},
 	UR_AHMEDALI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.ahmedali.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.ahmedali.xml";
 		}
 	},
 	UR_QADRI {
@@ -39,19 +39,19 @@ public enum QuranTranslationID {
 	UR_JAWADI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.jawadi.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.jawadi.xml";
 		}
 	},
 	UR_JUNAGARHI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.junagarhi.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.junagarhi.xml";
 		}
 	},
 	UR_NAJAFI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.najafi.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.najafi.xml";
 		}
 	};
 
