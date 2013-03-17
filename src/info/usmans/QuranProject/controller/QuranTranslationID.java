@@ -33,7 +33,7 @@ public enum QuranTranslationID {
 	UR_QADRI {
 		@Override
 		public String getResourcePath() {
-			return "../resources/trans/ur.qadri.xml";
+			return "/info/usmans/QuranProject/resources/trans/ur.qadri.xml";
 		}
 	},
 	UR_JAWADI {
