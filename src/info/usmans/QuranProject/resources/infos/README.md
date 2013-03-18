@@ -1,4 +1,4 @@
-**Quran Project**  Version 1.0-beta
+**Quran Project**  Version 1.1-beta
 by Usman Saleem (usman@usmans.info)
 
 

@@ -16,7 +16,6 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
-import java.awt.LayoutManager;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -51,13 +50,18 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSplitPane;
-import java.awt.GridLayout;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class Main extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -735356187246028596L;
+	/**
+	 * quranText[0] - Arabic Quran text quranText[1] - Translation for first
+	 * column quranText[2] - Translation for second column
+	 */
 	private Quran[] quranText = new Quran[3];
 	private QuranData quranData = Loader.getInstance().getQuranData();
 	private int totalPages = quranData.getPages().getPageList().size();
@@ -93,9 +97,13 @@ public class Main extends JFrame {
 	private JPanel sorrahSpinnerPanel;
 	private JLabel lblBottomSoorah;
 	private JSpinner spinnerSoorah;
-	private JLabel lblTranslationCol1;
-	private JLabel lblTranslationCol2;
 	private JMenuItem mntmQuranProject;
+	private JPanel transLabelpanel2;
+	private JComboBox<QuranTranslationID> comboBoxTranslation2;
+	private JPanel transLabelpanel1;
+	private JComboBox<QuranTranslationID> comboBoxTranslation1;
+	private TranslationCol1 col1AL = new TranslationCol1();
+	private TranslationCol2 col2AL = new TranslationCol2();
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -201,12 +209,19 @@ public class Main extends JFrame {
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans1.setViewportView(textPaneTrans1);
 
-		lblTranslationCol1 = new JLabel("");
-		lblTranslationCol1
-				.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		lblTranslationCol1
+		transLabelpanel1 = new JPanel();
+		col1Panel.add(transLabelpanel1, BorderLayout.NORTH);
+
+		comboBoxTranslation1 = new JComboBox<QuranTranslationID>();
+		comboBoxTranslation1.setModel(new DefaultComboBoxModel<QuranTranslationID>(
+				QuranTranslationID.values()));
+		comboBoxTranslation1.setSelectedIndex(0);
+		comboBoxTranslation1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
+				12));
+		comboBoxTranslation1
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		col1Panel.add(lblTranslationCol1, BorderLayout.NORTH);
+		comboBoxTranslation1.addActionListener(col1AL);
+		transLabelpanel1.add(comboBoxTranslation1);
 
 		JPanel col2Panel = new JPanel();
 		col2Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -224,12 +239,19 @@ public class Main extends JFrame {
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane_Trans2.setViewportView(textPaneTrans2);
 
-		lblTranslationCol2 = new JLabel("");
-		lblTranslationCol2
-				.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		lblTranslationCol2
+		transLabelpanel2 = new JPanel();
+		col2Panel.add(transLabelpanel2, BorderLayout.NORTH);
+
+		comboBoxTranslation2 = new JComboBox<QuranTranslationID>();
+		comboBoxTranslation2.setModel(new DefaultComboBoxModel<QuranTranslationID>(
+				QuranTranslationID.values()));
+		comboBoxTranslation2.setSelectedIndex(1);
+		comboBoxTranslation2.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
+				12));
+		comboBoxTranslation2
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		col2Panel.add(lblTranslationCol2, BorderLayout.NORTH);
+		comboBoxTranslation2.addActionListener(col2AL);
+		transLabelpanel2.add(comboBoxTranslation2);
 
 		lblSuraName = new JLabel("");
 		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -245,14 +267,12 @@ public class Main extends JFrame {
 		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
 				Font.BOLD, 16));
 		topPanel.add(lblChapterNumber, BorderLayout.EAST);
-
-		bottomPanel.setLayout(new GridLayout(0, 4, 0, 0));
 		// bottomPanel.add(spinner);
 
 		pageSpinnerPanel = new JPanel();
+		topPanel.add(pageSpinnerPanel, BorderLayout.WEST);
 		pageSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		bottomPanel.add(pageSpinnerPanel);
 
 		lblPage = new JLabel(Constants.UrduPage);
 		pageSpinnerPanel.add(lblPage);
@@ -261,10 +281,9 @@ public class Main extends JFrame {
 		lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblPage.setFont(new Font(Constants.hussaini_nastaleeq_fontFamily,
-				Font.BOLD, 12));
+		lblPage.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 12));
 
-		spinnerPage = getCustomSpinner();
+		spinnerPage = new JSpinner();
 		pageSpinnerPanel.add(spinnerPage);
 		spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		spinnerPage.addChangeListener(new ChangeListener() {
@@ -280,13 +299,13 @@ public class Main extends JFrame {
 		});
 		spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
 				.getPageList().size(), 1));
-
 		lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
 		pageSpinnerPanel.add(lblOf);
 		lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		lblOf.setFont(Loader.getInstance().getQuranicFont(
-				QuranicFonts.FONT_HUSSAINI_NASTALEEQ));
+				QuranicFonts.FONT_KFGQPC_TN));
+		bottomPanel.setLayout(new BorderLayout(0, 0));
 
 		sorrahSpinnerPanel = new JPanel();
 		sorrahSpinnerPanel
@@ -301,7 +320,7 @@ public class Main extends JFrame {
 
 		spinnerSoorah = new JSpinner();
 		// $hide>>$
-		spinnerSoorah = getCustomSpinner();
+		spinnerSoorah = new JSpinner();
 		// $hide<<$
 		sorrahSpinnerPanel.add(spinnerSoorah);
 		spinnerSoorah
@@ -412,17 +431,19 @@ public class Main extends JFrame {
 		mnInformation
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		menuBar.add(mnInformation);
-		
+
 		mntmQuranProject = new JMenuItem("");
 		mntmQuranProject.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InformationDialog dialog = new InformationDialog(Main.this, true);
+				InformationDialog dialog = new InformationDialog(Main.this,
+						true);
 				dialog.setLocationRelativeTo(Main.this);
 				dialog.setVisible(true);
 			}
 		});
 		mntmQuranProject.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
-		mntmQuranProject.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		mntmQuranProject
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mntmQuranProject.setText(Constants.UrduQuranProject);
 		mnInformation.add(mntmQuranProject);
 
@@ -446,12 +467,6 @@ public class Main extends JFrame {
 				QuranTranslationID.UR_MAUDUDI);
 		quranText[2] = Loader.getInstance().getQuranTranslation(
 				QuranTranslationID.UR_AHMED_RAZA_KHAN);
-
-		// update default display of translation author labels
-		lblTranslationCol1.setText(Constants.UrduTranslationBy + " "
-				+ QuranTranslationID.UR_MAUDUDI.toString());
-		lblTranslationCol2.setText(Constants.UrduTranslationBy + " "
-				+ QuranTranslationID.UR_AHMED_RAZA_KHAN.toString());
 
 	}
 
@@ -516,9 +531,6 @@ public class Main extends JFrame {
 			menu.add(menuItem);
 		}
 
-		// populate translations
-		TranslationCol1 col1AL = new TranslationCol1();
-		TranslationCol2 col2AL = new TranslationCol2();
 		for (QuranTranslationID translations : QuranTranslationID.values()) {
 			JMenuItem menuItem1 = new JMenuItem(translations.toString());
 			menuItem1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
@@ -547,15 +559,19 @@ public class Main extends JFrame {
 	private class TranslationCol1 implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			String transValue = e.getActionCommand();
-			QuranTranslationID translation = QuranTranslationID
-					.valueOf(transValue);
+			QuranTranslationID translation = null;
+			if (e.getSource() instanceof JComboBox) {
+				translation = (QuranTranslationID) comboBoxTranslation1
+						.getSelectedItem();
+			} else {
+				comboBoxTranslation1.setSelectedItem(QuranTranslationID
+						.valueOf(e.getActionCommand()));
+				return;
+			}
+
 			quranText[1] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(1, ((Integer) spinnerPage.getValue()).intValue());
-			lblTranslationCol1.setText(Constants.UrduTranslationBy + " "
-					+ translation.toString());
-
 		}
 
 	}
@@ -569,14 +585,19 @@ public class Main extends JFrame {
 	private class TranslationCol2 implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			String transValue = e.getActionCommand();
-			QuranTranslationID translation = QuranTranslationID
-					.valueOf(transValue);
+			QuranTranslationID translation = null;
+			if (e.getSource() instanceof JComboBox) {
+				translation = (QuranTranslationID) comboBoxTranslation2
+						.getSelectedItem();
+			} else {
+				comboBoxTranslation2.setSelectedItem(QuranTranslationID
+						.valueOf(e.getActionCommand()));
+				return;
+			}
+
 			quranText[2] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(2, ((Integer) spinnerPage.getValue()).intValue());
-			lblTranslationCol2.setText(Constants.UrduTranslationBy + " "
-					+ translation.toString());
 		}
 	}
 
@@ -610,35 +631,6 @@ public class Main extends JFrame {
 
 		}
 
-	}
-
-	private JSpinner getCustomSpinner() {
-		return new JSpinner() {
-
-			private static final long serialVersionUID = -4948001062221019002L;
-
-			@Override
-			public void setLayout(LayoutManager mgr) {
-				// $hide>>$
-				super.setLayout(new BorderLayout() {
-					private static final long serialVersionUID = 1453458704791041504L;
-
-					@Override
-					public void addLayoutComponent(Component comp,
-							Object constraints) {
-						if ("Editor".equals(constraints)) {
-							constraints = "Center";
-						} else if ("Next".equals(constraints)) {
-							constraints = "West";
-						} else if ("Previous".equals(constraints)) {
-							constraints = "East";
-						}
-						super.addLayoutComponent(comp, constraints);
-					}
-				});
-				// $hide<<$
-			}
-		};
 	}
 
 	/**
@@ -936,14 +928,14 @@ public class Main extends JFrame {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div dir=rtl align=center><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>")
-				.append(Constants.UrduSoorah).append(' ').append(data.getName())
-				.append("</font></div>");
+				.append(Constants.UrduSoorah).append(' ')
+				.append(data.getName()).append("</font></div>");
 		sb.append("<div dir=rtl align=right><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>");
 		sb.append(Constants.UrduAyatCount).append(" - ").append(data.getAyas())
 				.append("<br>");
-		sb.append(Constants.UrduRukuCount).append(" - ").append(data.getRukus())
-				.append("<br>");
+		sb.append(Constants.UrduRukuCount).append(" - ")
+				.append(data.getRukus()).append("<br>");
 		sb.append(Constants.UrduEraofSurah).append(" - ");
 		if (data.getType().equals("Meccan")) {
 			sb.append(Constants.UrduMekki);

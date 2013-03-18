@@ -34,7 +34,7 @@ public class Loader {
 	/**
 	 * Singleten instance
 	 */
-	private static Loader loader = new Loader();
+	private static Loader loader = null;
 
 	/**
 	 * Private constructor. Use getInstance to get the instance of this class
@@ -52,7 +52,10 @@ public class Loader {
 	 * 
 	 * @return Loader singleton reference
 	 */
-	public static Loader getInstance() {
+	public synchronized static Loader getInstance() {
+		if (loader == null) {
+			loader = new Loader();
+		}
 		return loader;
 	}
 
