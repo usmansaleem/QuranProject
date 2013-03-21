@@ -178,8 +178,12 @@ public class Main extends JFrame {
 								GroupLayout.DEFAULT_SIZE,
 								GroupLayout.PREFERRED_SIZE).addContainerGap()));
 
+		JPanel quranPanel = new JPanel();
+		splitPane.setRightComponent(quranPanel);
+		quranPanel.setLayout(new BorderLayout(0, 0));
+		
 		JScrollPane scrollPane = new JScrollPane();
-		splitPane.setRightComponent(scrollPane);
+		quranPanel.add(scrollPane);
 		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		txtpnData = new JTextPane();
@@ -187,6 +191,13 @@ public class Main extends JFrame {
 		txtpnData.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		txtpnData.setEditable(false);
 		scrollPane.setViewportView(txtpnData);
+		
+				lblSuraName = new JLabel("-");
+				quranPanel.add(lblSuraName, BorderLayout.NORTH);
+				lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+				lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
+				lblSuraName
+						.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
 
 		leftSplitPane = new JSplitPane();
 		leftSplitPane.setOneTouchExpandable(true);
@@ -253,13 +264,6 @@ public class Main extends JFrame {
 		comboBoxTranslation2.addActionListener(col2AL);
 		transLabelpanel2.add(comboBoxTranslation2);
 
-		lblSuraName = new JLabel("");
-		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSuraName
-				.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
-		topPanel.add(lblSuraName, BorderLayout.CENTER);
-
 		lblChapterNumber = new JLabel("");
 		lblChapterNumber
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -267,53 +271,54 @@ public class Main extends JFrame {
 		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
 				Font.BOLD, 16));
 		topPanel.add(lblChapterNumber, BorderLayout.EAST);
+		bottomPanel.setLayout(new BorderLayout(0, 0));
 		// bottomPanel.add(spinner);
 
 		pageSpinnerPanel = new JPanel();
-		topPanel.add(pageSpinnerPanel, BorderLayout.WEST);
+		bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
 		pageSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-
-		lblPage = new JLabel(Constants.UrduPage);
-		pageSpinnerPanel.add(lblPage);
-		lblPage.setVerticalTextPosition(SwingConstants.BOTTOM);
-		lblPage.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
-		lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblPage.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 12));
-
-		spinnerPage = new JSpinner();
-		pageSpinnerPanel.add(spinnerPage);
-		spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		spinnerPage.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent ce) {
-				Object obj = spinnerPage.getModel().getValue();
-				if (obj instanceof Integer) {
-					// load page
-					loadPage(0, (Integer) obj);
-					loadPage(1, (Integer) obj);
-					loadPage(2, (Integer) obj);
-				}
-			}
-		});
-		spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
-				.getPageList().size(), 1));
-		lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
-		pageSpinnerPanel.add(lblOf);
-		lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		lblOf.setFont(Loader.getInstance().getQuranicFont(
-				QuranicFonts.FONT_KFGQPC_TN));
-		bottomPanel.setLayout(new BorderLayout(0, 0));
+		
+				lblPage = new JLabel(Constants.UrduPage);
+				pageSpinnerPanel.add(lblPage);
+				lblPage.setVerticalTextPosition(SwingConstants.BOTTOM);
+				lblPage.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+				lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
+				lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
+				lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+				lblPage.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 12));
+				
+						spinnerPage = new JSpinner();
+						pageSpinnerPanel.add(spinnerPage);
+						spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+						spinnerPage.addChangeListener(new ChangeListener() {
+							public void stateChanged(ChangeEvent ce) {
+								Object obj = spinnerPage.getModel().getValue();
+								if (obj instanceof Integer) {
+									// load page
+									loadPage(0, (Integer) obj);
+									loadPage(1, (Integer) obj);
+									loadPage(2, (Integer) obj);
+								}
+							}
+						});
+						spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
+								.getPageList().size(), 1));
+						lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
+						pageSpinnerPanel.add(lblOf);
+						lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
+						lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+						lblOf.setFont(Loader.getInstance().getQuranicFont(
+								QuranicFonts.FONT_KFGQPC_TN));
 
 		sorrahSpinnerPanel = new JPanel();
 		sorrahSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		bottomPanel.add(sorrahSpinnerPanel);
+		//TODO - temporarily disabled, either delete or re-add in future
+		//bottomPanel.add(sorrahSpinnerPanel);
 
-		lblBottomSoorah = new JLabel(Constants.UrduSoorah);
-		lblBottomSoorah.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		lblBottomSoorah = new JLabel("-");
+		lblBottomSoorah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 12));
 		lblBottomSoorah
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		sorrahSpinnerPanel.add(lblBottomSoorah);
@@ -634,6 +639,7 @@ public class Main extends JFrame {
 	}
 
 	/**
+	 * Core logic.
 	 * Add ayas to be displayed on a page
 	 * 
 	 * @param page
@@ -928,8 +934,10 @@ public class Main extends JFrame {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div dir=rtl align=center><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>")
-				.append(Constants.UrduSoorah).append(' ')
-				.append(data.getName()).append("</font></div>");
+				.append(Constants.ArabicSoorah).append(' ')
+				.append(data.getName()).append(' ')
+				.append('(').append(data.getIndex()).append(')')
+				.append("</font></div>");
 		sb.append("<div dir=rtl align=right><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>");
 		sb.append(Constants.UrduAyatCount).append(" - ").append(data.getAyas())
