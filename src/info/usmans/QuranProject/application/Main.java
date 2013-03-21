@@ -135,6 +135,7 @@ public class Main extends JFrame {
 	private JLabel lblAyahSurah;
 
 	public Main() {
+		getContentPane().setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		setBackground(Color.WHITE);
 		setTitle("Quran Project");
@@ -150,62 +151,6 @@ public class Main extends JFrame {
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.6);
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.TRAILING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.TRAILING)
-														.addGroup(
-																Alignment.LEADING,
-																groupLayout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(
-																				splitPane,
-																				GroupLayout.DEFAULT_SIZE,
-																				668,
-																				Short.MAX_VALUE))
-														.addGroup(
-																Alignment.LEADING,
-																groupLayout
-																		.createSequentialGroup()
-																		.addContainerGap()
-																		.addComponent(
-																				bottomPanel,
-																				GroupLayout.DEFAULT_SIZE,
-																				668,
-																				Short.MAX_VALUE))
-														.addGroup(
-																Alignment.LEADING,
-																groupLayout
-																		.createSequentialGroup()
-																		.addGap(12)
-																		.addComponent(
-																				topPanel,
-																				GroupLayout.DEFAULT_SIZE,
-																				668,
-																				Short.MAX_VALUE)))
-										.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addComponent(topPanel, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 527,
-								Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(bottomPanel, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE).addContainerGap()));
 
 		JPanel quranPanel = new JPanel();
 		splitPane.setRightComponent(quranPanel);
@@ -456,7 +401,10 @@ public class Main extends JFrame {
 			}
 		});
 		spinnerSoorah.setModel(new SpinnerNumberModel(1, 1, 114, 1));
-		getContentPane().setLayout(groupLayout);
+		getContentPane().setLayout(new BorderLayout(0, 0));
+		getContentPane().add(splitPane, BorderLayout.CENTER);
+		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		getContentPane().add(topPanel, BorderLayout.NORTH);
 
 		menuBar = new JMenuBar();
 		menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -612,7 +560,7 @@ public class Main extends JFrame {
 				Point p1 = this.ayaOffsets[1].get(ayaNum);
 				Point p2 = this.ayaOffsets[2].get(ayaNum);
 
-				this.lblAyahSurah.setText("[" + ayaNum.x + ":" + ayaNum.y+ "]");
+				this.lblAyahSurah.setText(" [" + ayaNum.x + ":" + ayaNum.y+ "] ");
 				// clear existing highlighting
 				removeHighlights(this.txtpnData);
 				removeHighlights(this.textPaneTrans1);
@@ -879,7 +827,7 @@ public class Main extends JFrame {
 
 		// which chapter number belong to this page?
 		this.lblChapterNumber.setText(Constants.UrduChapter + " "
-				+ String.valueOf(getChapterOfPage(page.getIndex())));
+				+ String.valueOf(getChapterOfPage(page.getIndex())) + " ");
 
 		// special handling for page 1 - Surah Fatiha
 		if (pageNum == 1) {
