@@ -52,6 +52,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JSplitPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JSlider;
+import javax.swing.BoxLayout;
 
 public class Main extends JFrame {
 	/**
@@ -65,6 +67,13 @@ public class Main extends JFrame {
 	private Quran[] quranText = new Quran[3];
 	private QuranData quranData = Loader.getInstance().getQuranData();
 	private int totalPages = quranData.getPages().getPageList().size();
+	private String col0FontFamily = Constants.me_quran_FontFamily;
+	private int col0FontSize = 24;
+	private String col1FontFamily = Constants.KFGQPC_fontFamily;
+	private int col1FontSize = 20;
+	private String col2FontFamily = Constants.KFGQPC_fontFamily;
+	private int col2FontSize = 20;
+	
 
 	private JPanel topPanel;
 	private JLabel lblSuraName;
@@ -104,6 +113,9 @@ public class Main extends JFrame {
 	private JComboBox<QuranTranslationID> comboBoxTranslation1;
 	private TranslationCol1 col1AL = new TranslationCol1();
 	private TranslationCol2 col2AL = new TranslationCol2();
+	private JSlider slider;
+	private JSlider slider_1;
+	private JSlider slider_2;
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -182,6 +194,30 @@ public class Main extends JFrame {
 		splitPane.setRightComponent(quranPanel);
 		quranPanel.setLayout(new BorderLayout(0, 0));
 		
+		slider = new JSlider();
+		quranPanel.add(slider, BorderLayout.SOUTH);
+		slider.setFont(new Font("Dialog", Font.BOLD, 10));
+		slider.setAlignmentX(Component.LEFT_ALIGNMENT);
+		slider.setToolTipText("Font Size");
+		slider.setSnapToTicks(true);
+		slider.setValue(this.col0FontSize);
+		slider.setMinorTickSpacing(2);
+		slider.setMajorTickSpacing(4);
+		slider.setMaximum(32);
+		slider.setMinimum(8);
+		
+		slider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				//update the font size and reload the page
+				if(!slider.getValueIsAdjusting()) {
+					int size = slider.getValue();
+					Main.this.col0FontSize = size;
+					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					Main.this.loadPage(0, _pagenum);
+				}
+			}
+		});
+		
 		JScrollPane scrollPane = new JScrollPane();
 		quranPanel.add(scrollPane);
 		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -208,6 +244,26 @@ public class Main extends JFrame {
 		col1Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setRightComponent(col1Panel);
 		col1Panel.setLayout(new BorderLayout(0, 0));
+		
+		slider_1 = new JSlider();
+		slider_1.setSnapToTicks(true);
+		slider_1.setValue(this.col1FontSize);
+		slider_1.setMinorTickSpacing(2);
+		slider_1.setMajorTickSpacing(4);
+		slider_1.setMinimum(8);
+		slider_1.setMaximum(32);
+		col1Panel.add(slider_1, BorderLayout.SOUTH);
+		slider_1.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				//update the font size and reload the page
+				if(!slider_1.getValueIsAdjusting()) {
+					int size = slider_1.getValue();
+					Main.this.col1FontSize = size;
+					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					Main.this.loadPage(1, _pagenum);
+				}
+			}
+		});
 
 		scrollPane_Trans1 = new JScrollPane();
 		scrollPane_Trans1
@@ -238,6 +294,27 @@ public class Main extends JFrame {
 		col2Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setLeftComponent(col2Panel);
 		col2Panel.setLayout(new BorderLayout(0, 0));
+		
+		slider_2 = new JSlider();
+		slider_2.setValue(this.col2FontSize);
+		slider_2.setSnapToTicks(true);
+		slider_2.setMinorTickSpacing(2);
+		slider_2.setMinimum(8);
+		slider_2.setMaximum(32);
+		slider_2.setMajorTickSpacing(4);
+		col2Panel.add(slider_2, BorderLayout.SOUTH);
+		slider_2.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				//update the font size and reload the page
+				if(!slider_2.getValueIsAdjusting()) {
+					int size = slider_2.getValue();
+					Main.this.col2FontSize = size;
+					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					Main.this.loadPage(2, _pagenum);
+				}
+			}
+		});
+		
 
 		scrollPane_Trans2 = new JScrollPane();
 		scrollPane_Trans2
@@ -271,11 +348,9 @@ public class Main extends JFrame {
 		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
 				Font.BOLD, 16));
 		topPanel.add(lblChapterNumber, BorderLayout.EAST);
-		bottomPanel.setLayout(new BorderLayout(0, 0));
 		// bottomPanel.add(spinner);
 
 		pageSpinnerPanel = new JPanel();
-		bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
 		pageSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		
@@ -310,6 +385,8 @@ public class Main extends JFrame {
 						lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 						lblOf.setFont(Loader.getInstance().getQuranicFont(
 								QuranicFonts.FONT_KFGQPC_TN));
+						bottomPanel.setLayout(new BorderLayout(0, 0));
+						bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
 
 		sorrahSpinnerPanel = new JPanel();
 		sorrahSpinnerPanel
@@ -324,9 +401,6 @@ public class Main extends JFrame {
 		sorrahSpinnerPanel.add(lblBottomSoorah);
 
 		spinnerSoorah = new JSpinner();
-		// $hide>>$
-		spinnerSoorah = new JSpinner();
-		// $hide<<$
 		sorrahSpinnerPanel.add(spinnerSoorah);
 		spinnerSoorah
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -875,25 +949,24 @@ public class Main extends JFrame {
 			this.txtpnData.setDocument(new DefaultStyledDocument());
 			doc = new DefaultStyledDocument();
 			base = doc.addStyle("BaseStyle", defaultStyle);
-			StyleConstants.setFontFamily(base, Constants.me_quran_FontFamily);
-			StyleConstants.setFontSize(base, 24);
+			StyleConstants.setFontFamily(base, this.col0FontFamily);
+			StyleConstants.setFontSize(base, this.col0FontSize);
 		} else if (col == 1) {
 			this.textPaneTrans1.setDocument(new DefaultStyledDocument());
 			doc = new DefaultStyledDocument();
 			base = doc.addStyle("BaseStyle", defaultStyle);
-			StyleConstants.setFontFamily(base, Constants.KFGQPC_fontFamily);
-			StyleConstants.setFontSize(base, 20);
+			StyleConstants.setFontFamily(base, this.col1FontFamily);
+			StyleConstants.setFontSize(base, this.col1FontSize);
 
 		} else if (col == 2) {
 			this.textPaneTrans2.setDocument(new DefaultStyledDocument());
 			doc = new DefaultStyledDocument();
 			base = doc.addStyle("BaseStyle", defaultStyle);
-			StyleConstants.setFontFamily(base, Constants.KFGQPC_fontFamily);
-			StyleConstants.setFontSize(base, 20);
+			StyleConstants.setFontFamily(base, this.col2FontFamily);
+			StyleConstants.setFontSize(base, this.col2FontSize);
 
 		}
-		// StyleConstants.setAlignment(base, StyleConstants.ALIGN_JUSTIFIED);
-		// style for Bismillah
+		// style for Bismillah, same as base, except bold and centered
 		Style bismillahStyle = doc.addStyle("BismillahStyle", base);
 		StyleConstants.setBold(bismillahStyle, true);
 		StyleConstants
