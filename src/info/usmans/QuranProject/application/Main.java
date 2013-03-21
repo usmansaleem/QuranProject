@@ -835,6 +835,7 @@ public class Main extends JFrame {
 				doc.setParagraphAttributes(offset, doc.getLength() - offset,
 						doc.getStyle("BismillahStyle"), false);
 
+				//we wish to return from aya 1 (bismillah) for surah 1
 				if (suraIndex == 1) {
 					return;
 				}
