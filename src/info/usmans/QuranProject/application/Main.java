@@ -826,8 +826,6 @@ public class Main extends JFrame {
 					// this case is valid for Urdu translations
 					bismillahText = quranText[col].getSuraList().get(0)
 							.getAyaList().get(0).getText();
-					bismillahText = bismillahText + ayaNumStart
-							+ getArabicAyaNumbering(i) + ayaNumEnd;
 				}
 				int offset = doc.getLength();
 
