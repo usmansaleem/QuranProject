@@ -1,4 +1,4 @@
-**Quran Project**  Version 1.1-beta
+**Quran Project**  Version 1.2-beta
 by Usman Saleem (usman@usmans.info)
 
 
@@ -68,6 +68,11 @@ License: Creative Commons Attribution-NonCommercial 3.0 Unported License. To vie
 
 - XStream is used under following license:
  - http://xstream.codehaus.org/license.html
+ 
+ ** Change Log **
+ - 1.2-beta 2013-03-03 
+  - Added support for font size of individual panels
+  - Added support for text highlighting when ayah is clicked in main column
 
 
 

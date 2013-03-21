@@ -16,11 +16,15 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
+import java.awt.Point;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -28,7 +32,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Highlighter;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -53,7 +60,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSlider;
-import javax.swing.BoxLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Main extends JFrame {
 	/**
@@ -73,7 +81,15 @@ public class Main extends JFrame {
 	private int col1FontSize = 20;
 	private String col2FontFamily = Constants.KFGQPC_fontFamily;
 	private int col2FontSize = 20;
-	
+
+	/**
+	 * Will be used for highligting ayas on each column
+	 */
+	@SuppressWarnings("unchecked")
+	private Map<Point, Point> ayaOffsets[] = new Map[3];
+	private Highlighter.HighlightPainter myHighlightPainter = new MyHighlightPainter(
+			Color.GRAY);
+	private int highlightPos;
 
 	private JPanel topPanel;
 	private JLabel lblSuraName;
@@ -116,6 +132,7 @@ public class Main extends JFrame {
 	private JSlider slider;
 	private JSlider slider_1;
 	private JSlider slider_2;
+	private JLabel lblAyahSurah;
 
 	public Main() {
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -193,7 +210,7 @@ public class Main extends JFrame {
 		JPanel quranPanel = new JPanel();
 		splitPane.setRightComponent(quranPanel);
 		quranPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		slider = new JSlider();
 		quranPanel.add(slider, BorderLayout.SOUTH);
 		slider.setFont(new Font("Dialog", Font.BOLD, 10));
@@ -205,35 +222,45 @@ public class Main extends JFrame {
 		slider.setMajorTickSpacing(4);
 		slider.setMaximum(32);
 		slider.setMinimum(8);
-		
+
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				//update the font size and reload the page
-				if(!slider.getValueIsAdjusting()) {
+				// update the font size and reload the page
+				if (!slider.getValueIsAdjusting()) {
 					int size = slider.getValue();
 					Main.this.col0FontSize = size;
-					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
+							.intValue();
 					Main.this.loadPage(0, _pagenum);
 				}
 			}
 		});
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		quranPanel.add(scrollPane);
 		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
 		txtpnData = new JTextPane();
+		txtpnData.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JTextPane editor = (JTextPane) e.getSource();
+				Point pt = new Point(e.getX(), e.getY());
+				highlightPos = editor.viewToModel(pt);
+				highlightAya(highlightPos);
+			}
+		});
 		txtpnData.setBackground(new Color(255, 255, 204));
 		txtpnData.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		txtpnData.setEditable(false);
 		scrollPane.setViewportView(txtpnData);
-		
-				lblSuraName = new JLabel("-");
-				quranPanel.add(lblSuraName, BorderLayout.NORTH);
-				lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-				lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
-				lblSuraName
-						.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
+
+		lblSuraName = new JLabel("-");
+		quranPanel.add(lblSuraName, BorderLayout.NORTH);
+		lblSuraName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblSuraName.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSuraName
+				.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 16));
 
 		leftSplitPane = new JSplitPane();
 		leftSplitPane.setOneTouchExpandable(true);
@@ -244,7 +271,7 @@ public class Main extends JFrame {
 		col1Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setRightComponent(col1Panel);
 		col1Panel.setLayout(new BorderLayout(0, 0));
-		
+
 		slider_1 = new JSlider();
 		slider_1.setSnapToTicks(true);
 		slider_1.setValue(this.col1FontSize);
@@ -255,11 +282,12 @@ public class Main extends JFrame {
 		col1Panel.add(slider_1, BorderLayout.SOUTH);
 		slider_1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				//update the font size and reload the page
-				if(!slider_1.getValueIsAdjusting()) {
+				// update the font size and reload the page
+				if (!slider_1.getValueIsAdjusting()) {
 					int size = slider_1.getValue();
 					Main.this.col1FontSize = size;
-					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
+							.intValue();
 					Main.this.loadPage(1, _pagenum);
 				}
 			}
@@ -280,8 +308,9 @@ public class Main extends JFrame {
 		col1Panel.add(transLabelpanel1, BorderLayout.NORTH);
 
 		comboBoxTranslation1 = new JComboBox<QuranTranslationID>();
-		comboBoxTranslation1.setModel(new DefaultComboBoxModel<QuranTranslationID>(
-				QuranTranslationID.values()));
+		comboBoxTranslation1
+				.setModel(new DefaultComboBoxModel<QuranTranslationID>(
+						QuranTranslationID.values()));
 		comboBoxTranslation1.setSelectedIndex(0);
 		comboBoxTranslation1.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
 				12));
@@ -294,7 +323,7 @@ public class Main extends JFrame {
 		col2Panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		leftSplitPane.setLeftComponent(col2Panel);
 		col2Panel.setLayout(new BorderLayout(0, 0));
-		
+
 		slider_2 = new JSlider();
 		slider_2.setValue(this.col2FontSize);
 		slider_2.setSnapToTicks(true);
@@ -305,16 +334,16 @@ public class Main extends JFrame {
 		col2Panel.add(slider_2, BorderLayout.SOUTH);
 		slider_2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				//update the font size and reload the page
-				if(!slider_2.getValueIsAdjusting()) {
+				// update the font size and reload the page
+				if (!slider_2.getValueIsAdjusting()) {
 					int size = slider_2.getValue();
 					Main.this.col2FontSize = size;
-					int _pagenum = ((Integer)Main.this.spinnerPage.getValue()).intValue();
+					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
+							.intValue();
 					Main.this.loadPage(2, _pagenum);
 				}
 			}
 		});
-		
 
 		scrollPane_Trans2 = new JScrollPane();
 		scrollPane_Trans2
@@ -331,8 +360,9 @@ public class Main extends JFrame {
 		col2Panel.add(transLabelpanel2, BorderLayout.NORTH);
 
 		comboBoxTranslation2 = new JComboBox<QuranTranslationID>();
-		comboBoxTranslation2.setModel(new DefaultComboBoxModel<QuranTranslationID>(
-				QuranTranslationID.values()));
+		comboBoxTranslation2
+				.setModel(new DefaultComboBoxModel<QuranTranslationID>(
+						QuranTranslationID.values()));
 		comboBoxTranslation2.setSelectedIndex(1);
 		comboBoxTranslation2.setFont(new Font("Hussaini Nastaleeq", Font.BOLD,
 				12));
@@ -347,55 +377,67 @@ public class Main extends JFrame {
 		lblChapterNumber.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
 				Font.BOLD, 16));
-		topPanel.add(lblChapterNumber, BorderLayout.EAST);
+		topPanel.add(lblChapterNumber, BorderLayout.WEST);
+		
+		lblAyahSurah = new JLabel("[0:0]");
+		lblAyahSurah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 16));
+		topPanel.add(lblAyahSurah, BorderLayout.EAST);
 		// bottomPanel.add(spinner);
 
 		pageSpinnerPanel = new JPanel();
 		pageSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		
-				lblPage = new JLabel(Constants.UrduPage);
-				pageSpinnerPanel.add(lblPage);
-				lblPage.setVerticalTextPosition(SwingConstants.BOTTOM);
-				lblPage.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-				lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
-				lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
-				lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-				lblPage.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 12));
-				
-						spinnerPage = new JSpinner();
-						pageSpinnerPanel.add(spinnerPage);
-						spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-						spinnerPage.addChangeListener(new ChangeListener() {
-							public void stateChanged(ChangeEvent ce) {
-								Object obj = spinnerPage.getModel().getValue();
-								if (obj instanceof Integer) {
-									// load page
-									loadPage(0, (Integer) obj);
-									loadPage(1, (Integer) obj);
-									loadPage(2, (Integer) obj);
-								}
-							}
-						});
-						spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
-								.getPageList().size(), 1));
-						lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
-						pageSpinnerPanel.add(lblOf);
-						lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
-						lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-						lblOf.setFont(Loader.getInstance().getQuranicFont(
-								QuranicFonts.FONT_KFGQPC_TN));
-						bottomPanel.setLayout(new BorderLayout(0, 0));
-						bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
+
+		lblPage = new JLabel(Constants.UrduPage);
+		pageSpinnerPanel.add(lblPage);
+		lblPage.setVerticalTextPosition(SwingConstants.BOTTOM);
+		lblPage.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblPage.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblPage.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblPage.setFont(new Font(Constants.KFGQPC_fontFamily, Font.BOLD, 12));
+
+		spinnerPage = new JSpinner();
+		pageSpinnerPanel.add(spinnerPage);
+		spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		spinnerPage.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent ce) {
+				Object obj = spinnerPage.getModel().getValue();
+				if (obj instanceof Integer) {
+					// clear existing highlighting
+					removeHighlights(Main.this.txtpnData);
+					removeHighlights(Main.this.textPaneTrans1);
+					removeHighlights(Main.this.textPaneTrans2);
+
+					// load page
+					loadPage(0, (Integer) obj);
+					loadPage(1, (Integer) obj);
+					loadPage(2, (Integer) obj);
+
+					highlightStartPageAyah();
+				}
+			}
+		});
+		spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
+				.getPageList().size(), 1));
+		lblOf = new JLabel(quranData.getPages().getPageList().size() + " - ");
+		pageSpinnerPanel.add(lblOf);
+		lblOf.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblOf.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		lblOf.setFont(Loader.getInstance().getQuranicFont(
+				QuranicFonts.FONT_KFGQPC_TN));
+		bottomPanel.setLayout(new BorderLayout(0, 0));
+		bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
 
 		sorrahSpinnerPanel = new JPanel();
 		sorrahSpinnerPanel
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		//TODO - temporarily disabled, either delete or re-add in future
-		//bottomPanel.add(sorrahSpinnerPanel);
+		// TODO - temporarily disabled, either delete or re-add in future
+		// bottomPanel.add(sorrahSpinnerPanel);
 
 		lblBottomSoorah = new JLabel("-");
-		lblBottomSoorah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 12));
+		lblBottomSoorah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD,
+				12));
 		lblBottomSoorah
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		sorrahSpinnerPanel.add(lblBottomSoorah);
@@ -526,16 +568,112 @@ public class Main extends JFrame {
 		mntmQuranProject.setText(Constants.UrduQuranProject);
 		mnInformation.add(mntmQuranProject);
 
+		// non GUI Initialization
+		this.ayaOffsets[0] = new HashMap<Point, Point>();
+		this.ayaOffsets[1] = new HashMap<Point, Point>();
+		this.ayaOffsets[2] = new HashMap<Point, Point>();
+
 		initializeSubMenus();
 
-		// non GUI Initialization
 		initQuranText();
 		initializeStartPagesofChapters();
 
 		loadPage(0, 1);
 		loadPage(1, 1);
 		loadPage(2, 1);
+		
+		highlightStartPageAyah();
 
+	}
+
+	private void highlightStartPageAyah() {
+		//set highlight to start of page
+		PageData page = quranData.getPages().getPageMap().get(spinnerPage.getValue());
+		int currentPageStartSura = page.getSura();
+		int currentPageStartAya = currentPageStartSura == 1 ? 2 : page.getAya();
+		
+		Point p = Main.this.ayaOffsets[0].get(new Point(currentPageStartSura, currentPageStartAya));
+		highlightAya(p.x);
+
+	}
+
+	/**
+	 * Attempts to highlight ayah
+	 * 
+	 * @param pos
+	 *            Cursor position
+	 */
+	private void highlightAya(int pos) {
+		// determine which aya lies in this position
+		for (Point ayaNum : this.ayaOffsets[0].keySet()) {
+			Point p = this.ayaOffsets[0].get(ayaNum);
+			if (pos >= p.x && pos <= p.y) {
+				// we got the aya number
+				Point p1 = this.ayaOffsets[1].get(ayaNum);
+				Point p2 = this.ayaOffsets[2].get(ayaNum);
+
+				this.lblAyahSurah.setText("[" + ayaNum.x + ":" + ayaNum.y+ "]");
+				// clear existing highlighting
+				removeHighlights(this.txtpnData);
+				removeHighlights(this.textPaneTrans1);
+				removeHighlights(this.textPaneTrans2);
+
+				// now highlight using our custom highlighter
+				Highlighter hilite = this.txtpnData.getHighlighter();
+				int ayaEndNumChars = String.valueOf(ayaNum.y).length() + 2;
+				try {
+					hilite.addHighlight(p.x, p.y - ayaEndNumChars,
+							myHighlightPainter);
+				} catch (BadLocationException e) {
+					System.err
+							.println("Invalid location while attempt to set highlighter: "
+									+ e.getMessage());
+				}
+
+				hilite = this.textPaneTrans1.getHighlighter();
+				try {
+					hilite.addHighlight(p1.x, p1.y - ayaEndNumChars,
+							myHighlightPainter);
+					this.textPaneTrans1.setCaretPosition(p1.y);
+				} catch (BadLocationException e) {
+					System.err
+							.println("Invalid location while attempt to set highlighter: "
+									+ e.getMessage());
+				}
+
+				hilite = this.textPaneTrans2.getHighlighter();
+				try {
+					hilite.addHighlight(p2.x, p2.y - ayaEndNumChars,
+							myHighlightPainter);
+					this.textPaneTrans2.setCaretPosition(p2.y);
+				} catch (BadLocationException e) {
+					System.err
+							.println("Invalid location while attempt to set highlighter: "
+									+ e.getMessage());
+				}
+
+				break;
+			}
+		}
+
+	}
+
+	// Removes only our private highlights
+	private void removeHighlights(JTextComponent textComp) {
+		Highlighter hilite = textComp.getHighlighter();
+		Highlighter.Highlight[] hilites = hilite.getHighlights();
+		for (int i = 0; i < hilites.length; i++) {
+			if (hilites[i].getPainter() instanceof MyHighlightPainter) {
+				hilite.removeHighlight(hilites[i]);
+			}
+		}
+	}
+
+	private class MyHighlightPainter extends
+			DefaultHighlighter.DefaultHighlightPainter {
+		public MyHighlightPainter(Color color) {
+			super(color);
+		}
 	}
 
 	private void initQuranText() {
@@ -713,13 +851,13 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * Core logic.
-	 * Add ayas to be displayed on a page
+	 * Core logic. Add ayas to be displayed on a page
 	 * 
 	 * @param page
 	 * @return
 	 */
 	private void loadPage(int col, int pageNum) {
+		clearAyaOffset(col);
 		DefaultStyledDocument doc = initDocStyles(col);
 		StringBuilder suraLabelText = new StringBuilder();
 		StringBuilder suraTooltipText = new StringBuilder();
@@ -867,6 +1005,13 @@ public class Main extends JFrame {
 		}
 	}
 
+	/**
+	 * Clear ayaoffset at start of page load
+	 */
+	private void clearAyaOffset(int col) {
+		this.ayaOffsets[col].clear();
+	}
+
 	private void addLineFeed(DefaultStyledDocument doc) {
 		try {
 			doc.insertString(doc.getLength(), "\n", doc.getStyle("BaseStyle"));
@@ -909,16 +1054,23 @@ public class Main extends JFrame {
 				doc.setParagraphAttributes(offset, doc.getLength() - offset,
 						doc.getStyle("BismillahStyle"), false);
 
-				//we wish to return from aya 1 (bismillah) for surah 1
+				// we wish to return from aya 1 (bismillah) for surah 1
 				if (suraIndex == 1) {
 					return;
 				}
 			}
 
+			int startOffset = doc.getLength();
 			// add actual Aya text
-			doc.insertString(doc.getLength(), ayaText + ayaNumStart
+			doc.insertString(startOffset, ayaText + ayaNumStart
 					+ getArabicAyaNumbering(i) + ayaNumEnd + " ",
 					doc.getStyle("BaseStyle"));
+
+			// calculate offsetting for this aya for highlighting purposes
+			int endOffset = doc.getLength() - 1;
+
+			this.ayaOffsets[col].put(new Point(suraIndex, i), new Point(
+					startOffset, endOffset));
 
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -1007,9 +1159,8 @@ public class Main extends JFrame {
 		sb.append("<div dir=rtl align=center><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>")
 				.append(Constants.ArabicSoorah).append(' ')
-				.append(data.getName()).append(' ')
-				.append('(').append(data.getIndex()).append(')')
-				.append("</font></div>");
+				.append(data.getName()).append(' ').append('(')
+				.append(data.getIndex()).append(')').append("</font></div>");
 		sb.append("<div dir=rtl align=right><font face='")
 				.append(Constants.KFGQPC_fontFamily).append("'>");
 		sb.append(Constants.UrduAyatCount).append(" - ").append(data.getAyas())

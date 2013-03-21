@@ -80,9 +80,11 @@ public class InformationDialog extends JDialog {
 			return "";
 		}
 		
-		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+		java.util.Scanner s = new java.util.Scanner(is);
+		s.useDelimiter("\\A");
 		String data = s.hasNext() ? s.next() : "";
 		try {
+			s.close();
 			is.close();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Unable to close InputStream for README file","Error InputStream close", JOptionPane.ERROR_MESSAGE);
