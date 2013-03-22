@@ -41,11 +41,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -72,25 +69,41 @@ public class Main extends JFrame {
 	 * quranText[0] - Arabic Quran text quranText[1] - Translation for first
 	 * column quranText[2] - Translation for second column
 	 */
-	private Quran[] quranText = new Quran[3];
-	private QuranData quranData = Loader.getInstance().getQuranData();
-	private int totalPages = quranData.getPages().getPageList().size();
-	private String col0FontFamily = Constants.me_quran_FontFamily;
+	private Quran[] quranText;
+	/**
+	 * Load Quran Meta Data
+	 */
+	private QuranData quranData;
+	/**
+	 * Number of total pages
+	 */
+	private int totalPages;
+
+	// fonts and their sizes used by each panel.
+	private final String col0FontFamily = Constants.me_quran_FontFamily;
 	private int col0FontSize = 24;
-	private String col1FontFamily = Constants.KFGQPC_fontFamily;
+	private final String col1FontFamily = Constants.KFGQPC_fontFamily;
 	private int col1FontSize = 20;
-	private String col2FontFamily = Constants.KFGQPC_fontFamily;
+	private final String col2FontFamily = Constants.KFGQPC_fontFamily;
 	private int col2FontSize = 20;
 
 	/**
-	 * Will be used for highligting ayas on each column
+	 * Map to use highligting ayas on each column. The key point contains surah,
+	 * aya. The value point contains start position and end position
 	 */
 	@SuppressWarnings("unchecked")
 	private Map<Point, Point> ayaOffsets[] = new Map[3];
-	private Highlighter.HighlightPainter myHighlightPainter = new MyHighlightPainter(
-			Color.GRAY);
+	/**
+	 * The highlighter color. We are using a custom extended class for easier
+	 * cleanup.
+	 */
+	private Highlighter.HighlightPainter myHighlightPainter;
+	/**
+	 * The current location to highlight in main panel.
+	 */
 	private int highlightPos;
 
+	// GUI components
 	private JPanel topPanel;
 	private JLabel lblSuraName;
 	private JPanel bottomPanel;
@@ -119,9 +132,9 @@ public class Main extends JFrame {
 	private JMenu menuTranslationCol1;
 	private JMenu menuTranslationCol2;
 	private JPanel pageSpinnerPanel;
-	private JPanel sorrahSpinnerPanel;
-	private JLabel lblBottomSoorah;
-	private JSpinner spinnerSoorah;
+	// private JPanel sorrahSpinnerPanel;
+	// private JLabel lblBottomSoorah;
+	// private JSpinner spinnerSoorah;
 	private JMenuItem mntmQuranProject;
 	private JPanel transLabelpanel2;
 	private JComboBox<QuranTranslationID> comboBoxTranslation2;
@@ -134,8 +147,19 @@ public class Main extends JFrame {
 	private JSlider slider_2;
 	private JLabel lblAyahSurah;
 
+	private void preInit() {
+		this.quranText = new Quran[3];
+		this.quranData = Loader.getInstance().getQuranData();
+		this.totalPages = quranData.getPages().getPageList().size();
+		this.myHighlightPainter = new MyHighlightPainter(Color.LIGHT_GRAY);
+
+	}
+
 	public Main() {
-		getContentPane().setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		preInit();
+
+		getContentPane().setComponentOrientation(
+				ComponentOrientation.RIGHT_TO_LEFT);
 		setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		setBackground(Color.WHITE);
 		setTitle("Quran Project");
@@ -176,6 +200,7 @@ public class Main extends JFrame {
 					Main.this.col0FontSize = size;
 					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
 							.intValue();
+					// TODO: Use SwingWorker thread
 					Main.this.loadPage(0, _pagenum);
 				}
 			}
@@ -189,9 +214,9 @@ public class Main extends JFrame {
 		txtpnData.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JTextPane editor = (JTextPane) e.getSource();
 				Point pt = new Point(e.getX(), e.getY());
-				highlightPos = editor.viewToModel(pt);
+				highlightPos = txtpnData.viewToModel(pt);
+				// TODO: Consider SwingWorker thread?
 				highlightAya(highlightPos);
 			}
 		});
@@ -233,6 +258,7 @@ public class Main extends JFrame {
 					Main.this.col1FontSize = size;
 					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
 							.intValue();
+					// TODO: Use SwingWorker thread
 					Main.this.loadPage(1, _pagenum);
 				}
 			}
@@ -285,6 +311,7 @@ public class Main extends JFrame {
 					Main.this.col2FontSize = size;
 					int _pagenum = ((Integer) Main.this.spinnerPage.getValue())
 							.intValue();
+					// TODO: Use SwingWorker thread
 					Main.this.loadPage(2, _pagenum);
 				}
 			}
@@ -323,11 +350,11 @@ public class Main extends JFrame {
 		lblChapterNumber.setFont(new Font(Constants.KFGQPC_fontFamily,
 				Font.BOLD, 16));
 		topPanel.add(lblChapterNumber, BorderLayout.WEST);
-		
+
 		lblAyahSurah = new JLabel("[0:0]");
-		lblAyahSurah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 16));
+		lblAyahSurah
+				.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 16));
 		topPanel.add(lblAyahSurah, BorderLayout.EAST);
-		// bottomPanel.add(spinner);
 
 		pageSpinnerPanel = new JPanel();
 		pageSpinnerPanel
@@ -347,20 +374,20 @@ public class Main extends JFrame {
 		spinnerPage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		spinnerPage.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent ce) {
-				Object obj = spinnerPage.getModel().getValue();
-				if (obj instanceof Integer) {
-					// clear existing highlighting
-					removeHighlights(Main.this.txtpnData);
-					removeHighlights(Main.this.textPaneTrans1);
-					removeHighlights(Main.this.textPaneTrans2);
+				Integer pageNum = (Integer) spinnerPage.getModel().getValue();
+				// TODO: SwingWorker thread
+				// clear existing highlighting
+				removeHighlights(Main.this.txtpnData);
+				removeHighlights(Main.this.textPaneTrans1);
+				removeHighlights(Main.this.textPaneTrans2);
 
-					// load page
-					loadPage(0, (Integer) obj);
-					loadPage(1, (Integer) obj);
-					loadPage(2, (Integer) obj);
+				// load page
+				loadPage(0, pageNum);
+				loadPage(1, pageNum);
+				loadPage(2, pageNum);
 
-					highlightStartPageAyah();
-				}
+				highlightStartPageAyah();
+
 			}
 		});
 		spinnerPage.setModel(new SpinnerNumberModel(1, 1, quranData.getPages()
@@ -373,34 +400,28 @@ public class Main extends JFrame {
 				QuranicFonts.FONT_KFGQPC_TN));
 		bottomPanel.setLayout(new BorderLayout(0, 0));
 		bottomPanel.add(pageSpinnerPanel, BorderLayout.CENTER);
-
-		sorrahSpinnerPanel = new JPanel();
-		sorrahSpinnerPanel
-				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		// TODO - temporarily disabled, either delete or re-add in future
-		// bottomPanel.add(sorrahSpinnerPanel);
-
-		lblBottomSoorah = new JLabel("-");
-		lblBottomSoorah.setFont(new Font("KFGQPC Uthman Taha Naskh", Font.BOLD,
-				12));
-		lblBottomSoorah
-				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		sorrahSpinnerPanel.add(lblBottomSoorah);
-
-		spinnerSoorah = new JSpinner();
-		sorrahSpinnerPanel.add(spinnerSoorah);
-		spinnerSoorah
-				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		spinnerSoorah.addChangeListener(new ChangeListener() {
-
-			public void stateChanged(ChangeEvent e) {
-				Integer surah = (Integer) spinnerSoorah.getValue();
-				spinnerPage.setValue(quranData.getSuras().getSuraList()
-						.get(surah - 1).getPage());
-
-			}
-		});
-		spinnerSoorah.setModel(new SpinnerNumberModel(1, 1, 114, 1));
+		/*
+		 * sorrahSpinnerPanel = new JPanel(); sorrahSpinnerPanel
+		 * .setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		 * bottomPanel.add(sorrahSpinnerPanel);
+		 * 
+		 * lblBottomSoorah = new JLabel("-"); lblBottomSoorah.setFont(new
+		 * Font("KFGQPC Uthman Taha Naskh", Font.BOLD, 12)); lblBottomSoorah
+		 * .setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		 * sorrahSpinnerPanel.add(lblBottomSoorah);
+		 * 
+		 * spinnerSoorah = new JSpinner();
+		 * sorrahSpinnerPanel.add(spinnerSoorah); spinnerSoorah
+		 * .setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		 * spinnerSoorah.addChangeListener(new ChangeListener() {
+		 * 
+		 * public void stateChanged(ChangeEvent e) { Integer surah = (Integer)
+		 * spinnerSoorah.getValue();
+		 * spinnerPage.setValue(quranData.getSuras().getSuraList() .get(surah -
+		 * 1).getPage());
+		 * 
+		 * } }); spinnerSoorah.setModel(new SpinnerNumberModel(1, 1, 114, 1));
+		 */
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		getContentPane().add(splitPane, BorderLayout.CENTER);
 		getContentPane().add(bottomPanel, BorderLayout.SOUTH);
@@ -422,10 +443,19 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmUsmaniText);
 		rdbtnmntmUsmaniText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// TODO: Determine if current text type is already usmani,
+				// if it is, then don't load it
+
+				removeHighlights(Main.this.txtpnData);
+
+				// TODO: Use SwingWorker thread
 				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.USMANI_SPECIALTANWEEN);
 				Main.this.loadPage(0, (Integer) spinnerPage.getModel()
 						.getValue());
+
+				highlightAya(highlightPos);
+				Main.this.txtpnData.setCaretPosition(highlightPos);
 
 			}
 		});
@@ -441,10 +471,19 @@ public class Main extends JFrame {
 		mnText.add(rdbtnmntmSimpleText);
 		rdbtnmntmSimpleText.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// TODO: Determine if current text type is already simple,
+				// if it is, then don't load it
+
+				removeHighlights(Main.this.txtpnData);
+
+				// TODO: Use SwingWorker thread
 				Main.this.quranText[0] = Loader.getInstance().getQuranText(
 						QuranTextType.SIMPLE);
 				Main.this.loadPage(0, (Integer) spinnerPage.getModel()
 						.getValue());
+
+				highlightAya(highlightPos);
+				Main.this.txtpnData.setCaretPosition(highlightPos);
 			}
 		});
 		rdbtnmntmSimpleText.setFont(new Font(
@@ -510,13 +549,18 @@ public class Main extends JFrame {
 				dialog.setVisible(true);
 			}
 		});
-		mntmQuranProject.setFont(new Font("Hussaini Nastaleeq", Font.BOLD, 12));
+		mntmQuranProject.setFont(new Font(
+				Constants.hussaini_nastaleeq_fontFamily, Font.BOLD, 12));
 		mntmQuranProject
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		mntmQuranProject.setText(Constants.UrduQuranProject);
 		mnInformation.add(mntmQuranProject);
 
-		// non GUI Initialization
+		postInit();
+
+	}
+
+	private void postInit() {
 		this.ayaOffsets[0] = new HashMap<Point, Point>();
 		this.ayaOffsets[1] = new HashMap<Point, Point>();
 		this.ayaOffsets[2] = new HashMap<Point, Point>();
@@ -529,18 +573,19 @@ public class Main extends JFrame {
 		loadPage(0, 1);
 		loadPage(1, 1);
 		loadPage(2, 1);
-		
-		highlightStartPageAyah();
 
+		highlightStartPageAyah();
 	}
 
 	private void highlightStartPageAyah() {
-		//set highlight to start of page
-		PageData page = quranData.getPages().getPageMap().get(spinnerPage.getValue());
+		// set highlight to start of page
+		PageData page = quranData.getPages().getPageMap()
+				.get(spinnerPage.getValue());
 		int currentPageStartSura = page.getSura();
 		int currentPageStartAya = currentPageStartSura == 1 ? 2 : page.getAya();
-		
-		Point p = Main.this.ayaOffsets[0].get(new Point(currentPageStartSura, currentPageStartAya));
+
+		Point p = Main.this.ayaOffsets[0].get(new Point(currentPageStartSura,
+				currentPageStartAya));
 		highlightAya(p.x);
 
 	}
@@ -560,7 +605,8 @@ public class Main extends JFrame {
 				Point p1 = this.ayaOffsets[1].get(ayaNum);
 				Point p2 = this.ayaOffsets[2].get(ayaNum);
 
-				this.lblAyahSurah.setText(" [" + ayaNum.x + ":" + ayaNum.y+ "] ");
+				this.lblAyahSurah.setText(" [" + ayaNum.x + ":" + ayaNum.y
+						+ "] ");
 				// clear existing highlighting
 				removeHighlights(this.txtpnData);
 				removeHighlights(this.textPaneTrans1);
@@ -716,7 +762,10 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * ActionListener for column1 translation
+	 * ActionListener for column1 translation.
+	 * 
+	 * It is used both by menu item and combo box. When used by menu item, we
+	 * update value in combo box, results calling same method again.
 	 * 
 	 * @author usman
 	 * 
@@ -734,15 +783,21 @@ public class Main extends JFrame {
 				return;
 			}
 
+			// TODO: Move into SwingWorker thread
+			removeHighlights(Main.this.textPaneTrans1);
 			quranText[1] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(1, ((Integer) spinnerPage.getValue()).intValue());
+			highlightAya(highlightPos);
 		}
 
 	}
 
 	/**
 	 * ActionListener for column2 translation
+	 * 
+	 * It is used both by menu item and combo box. When used by menu item, we
+	 * update value in combo box, results calling same method again.
 	 * 
 	 * @author usman
 	 * 
@@ -760,9 +815,12 @@ public class Main extends JFrame {
 				return;
 			}
 
+			// TODO: Move into SwingWorker thread
+			removeHighlights(Main.this.textPaneTrans2);
 			quranText[2] = Loader.getInstance()
 					.getQuranTranslation(translation);
 			loadPage(2, ((Integer) spinnerPage.getValue()).intValue());
+			highlightAya(highlightPos);
 		}
 	}
 
@@ -786,7 +844,11 @@ public class Main extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			try {
-				spinnerSoorah.setValue(new Integer(e.getActionCommand()));
+				// spinnerSoorah.setValue(new Integer(e.getActionCommand()));
+				spinnerPage.setValue(quranData.getSuras().getSuraList()
+						.get(new Integer(e.getActionCommand()).intValue() - 1)
+						.getPage());
+				//TODO: Highlight start of surah
 			} catch (NumberFormatException nfe) {
 				JOptionPane.showMessageDialog(Main.this,
 						"Invalid Action Command: " + e.getActionCommand(),
@@ -1144,9 +1206,6 @@ public class Main extends JFrame {
 				Main m = new Main();
 				m.setSize(1024, 768);
 				m.setVisible(true);
-				// Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				// m.setLocation(dim.width/2-m.getSize().width/2,
-				// dim.height/2-m.getSize().height/2);
 				m.setLocationRelativeTo(null);
 			}
 		});
